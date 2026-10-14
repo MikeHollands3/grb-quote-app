@@ -1,0 +1,29 @@
+{
+  "vat": 0.20,
+  "benchmarks": {
+    "Single-storey rear extension": { "Budget": [1500, 1900], "Standard": [1900, 2400], "Premium": [2400, 3000] },
+    "Side return extension": { "Budget": [1700, 2100], "Standard": [2100, 2600], "Premium": [2600, 3300] },
+    "Wrap-around extension": { "Budget": [1700, 2100], "Standard": [2100, 2600], "Premium": [2600, 3300] },
+    "Kitchen extension (build only)": { "Budget": [1500, 1900], "Standard": [1900, 2400], "Premium": [2400, 3000] },
+    "Double-storey extension": { "Budget": [1400, 1800], "Standard": [1800, 2300], "Premium": [2300, 2800] },
+    "Loft - rooflight / Velux": { "Budget": [1000, 1300], "Standard": [1300, 1600], "Premium": [1600, 2000] },
+    "Loft - dormer": { "Budget": [1300, 1600], "Standard": [1600, 2000], "Premium": [2000, 2500] },
+    "Loft - hip-to-gable (+dormer)": { "Budget": [1500, 1900], "Standard": [1900, 2300], "Premium": [2300, 2800] },
+    "Loft - mansard": { "Budget": [1800, 2200], "Standard": [2200, 2700], "Premium": [2700, 3300] },
+    "Garden room / outbuilding": { "Budget": [1200, 1600], "Standard": [1600, 2100], "Premium": [2100, 2800] },
+    "Kitchen refurbishment": { "Budget": [450, 700], "Standard": [700, 1200], "Premium": [1200, 2000] },
+    "Bathroom refurbishment": { "Budget": [600, 1000], "Standard": [1000, 1600], "Premium": [1600, 2800] }
+  },
+  "regions": {
+    "London / South-East (+30%)": 1.30,
+    "Outer London / Home Counties (+15%)": 1.15,
+    "Reading / Thames Valley (+10%)": 1.10,
+    "Midlands / UK average (+0%)": 1.00,
+    "North / lower cost (-5%)": 0.95
+  },
+  "roofs": {
+    "Flat / lean-to (baseline)": [0, 0],
+    "Pitched - tiled": [200, 350],
+    "Pitched - slate / complex": [300, 500]
+  }
+}
