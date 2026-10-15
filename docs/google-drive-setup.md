@@ -1,4 +1,4 @@
-# Google Drive saving — one-off setup
+# Google setup (Drive saving, and later the jobs calendar and sheet) — one-off
 
 The Saved tab can upload every quote (the PDF plus an editable `.json` copy) to a
 **GRB Quotes** folder in the signed-in user's Google Drive. Sign-in happens in the
@@ -14,16 +14,19 @@ Sign in to <https://console.cloud.google.com> **with a @grbhomeimprovements.co.u
 account** (so the project belongs to the GRB Workspace).
 
 1. **Create a project**, e.g. "GRB Quick Quote".
-2. **APIs & Services → Library →** search **Google Drive API** → **Enable**.
+2. **APIs & Services → Library →** enable each of: **Google Drive API**, **Google Calendar API**,
+   **Google Sheets API** (Calendar and Sheets are for the jobs calendar and payments sheet).
 3. **Google Auth Platform → Branding** (older consoles: *OAuth consent screen*):
    app name "GRB Quick Quote", support email info@grbhomeimprovements.co.uk.
 4. **Audience → User type: Internal.** This limits sign-in to GRB Workspace
    accounts and means Google does not need to review the app.
-5. **Data access → Add or remove scopes →** add
-   `https://www.googleapis.com/auth/drive.file`.
+5. **Data access → Add or remove scopes →** add (paste each into "Manually add scopes"):
+   - `https://www.googleapis.com/auth/drive.file` — only files the app creates
+   - `https://www.googleapis.com/auth/calendar.app.created` — only calendars the app creates (GRB Jobs)
 6. **Clients → Create client → Web application**, name "GRB Quick Quote web".
    Under **Authorised JavaScript origins** add the address the app runs from, e.g.
-   - `https://quote.grbhomeimprovements.co.uk` (once deployed)
+   - `https://app.grbhomeimprovements.co.uk`
+   - `https://grb-quote-app.pages.dev`
    - `http://localhost:5173` (for local testing)
 
    No redirect URIs are needed.
@@ -35,8 +38,9 @@ Set `VITE_GOOGLE_CLIENT_ID` when building:
 
 - **Local:** create `.env.local` in the project root containing
   `VITE_GOOGLE_CLIENT_ID=…apps.googleusercontent.com`, then `npm run dev`.
-- **Hosting (Cloudflare Pages / Vercel):** add `VITE_GOOGLE_CLIENT_ID` as an
-  environment variable for the build, then redeploy.
+- **Cloudflare Pages:** project → **Settings → Variables and Secrets** → add
+  `VITE_GOOGLE_CLIENT_ID` (plain text) for Production, then **Deployments → Retry deployment**
+  on the latest one so the build picks it up.
 
 Without it, the Saved tab just says Drive saving isn't switched on; everything
 else works.
