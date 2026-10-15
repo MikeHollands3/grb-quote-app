@@ -34,6 +34,9 @@ account** (so the project belongs to the GRB Workspace).
 
 ## 2. Give the app the Client ID
 
+Done: the GRB client ID is built into `src/drive-sync.ts`. `VITE_GOOGLE_CLIENT_ID` only needs setting to
+override it (e.g. a test project).
+
 Set `VITE_GOOGLE_CLIENT_ID` when building:
 
 - **Local:** create `.env.local` in the project root containing

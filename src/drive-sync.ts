@@ -9,7 +9,10 @@ import { fileBase, quotePdf, type EstimateState } from './quote-files'
  * accepted (and the OAuth consent screen should be set to "Internal").
  */
 
-export const CLIENT_ID: string = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''
+// GRB Workspace OAuth client ("GRB Quick Quote web"). Not a secret — it only works from the
+// authorised origins set in Google Cloud. VITE_GOOGLE_CLIENT_ID overrides it (e.g. for testing).
+const GRB_CLIENT_ID = '551976286145-qh78tqhsrd7cr9oqv9h28u8k06m1q8ut.apps.googleusercontent.com'
+export const CLIENT_ID: string = import.meta.env.VITE_GOOGLE_CLIENT_ID || GRB_CLIENT_ID
 export const HOSTED_DOMAIN = 'grbhomeimprovements.co.uk'
 const SCOPE = 'https://www.googleapis.com/auth/drive.file'
 const SETTINGS = 'grb.drive'
