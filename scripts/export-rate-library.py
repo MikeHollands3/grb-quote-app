@@ -39,18 +39,16 @@ def main(path):
     wb = openpyxl.load_workbook(path, data_only=True)
 
     lm = wb["Rates - Labour & Materials"]
-    items = [
-        {
-            "category": cat,
-            "item": item,
-            "unit": unit,
-            "rate": rate,
-            "low": low,
-            "high": high,
-            "source": src,
-        }
-        for cat, item, unit, rate, low, high, src in rows(lm, 4)
-    ]
+    header = [c.value for c in lm[3]]
+    local_col = next((i for i, h in enumerate(header) if isinstance(h, str) and h.strip().lower().startswith("local")), None)
+    items = []
+    for r in rows(lm, 4):
+        cat, item, unit, rate, low, high, src = r[:7]
+        entry = {"category": cat, "item": item, "unit": unit, "rate": rate, "low": low, "high": high, "source": src}
+        # Optional "Local actual" column (Yes/No): local prices skip the region/inflation uplift.
+        if local_col is not None and str(r[local_col] or "").strip().lower() in ("yes", "y", "true", "1"):
+            entry["local"] = True
+        items.append(entry)
 
     bf = wb["Rates - Benchmarks & Fees"]
     benchmarks = {

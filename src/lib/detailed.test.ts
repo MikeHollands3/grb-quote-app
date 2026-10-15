@@ -118,6 +118,15 @@ describe('computeDetailed — switches and edge cases', () => {
     expect(r.waste.total).toBe(330)
   })
 
+  it('local actual rates skip the region/inflation uplift', () => {
+    const input = example()
+    input.materials.push({ item: 'Screened topsoil (grab load, delivered)', qty: 2 })
+    const line = computeDetailed(input, lib, settings).materials.at(-1)!
+    expect(line.rate).toBe(250)
+    expect(line.cost).toBe(500)
+    expect(line.local).toBe(true)
+  })
+
   it('no VAT when not VAT registered; unknown items price at zero', () => {
     const input = example()
     input.labour.push({ item: 'Not in library', qty: 5 })

@@ -362,7 +362,7 @@ function outputs(r: DetailedResult, s: State): Record<string, string> {
     let k = 0
     s.input[sec].forEach((l, idx) => {
       const pl = l.item ? r[sec][k++] : undefined
-      o[`${sec}.${idx}.meta`] = pl ? `${pl.unit} @ ${gbp2.format(pl.rate)}` : ''
+      o[`${sec}.${idx}.meta`] = pl ? `${pl.unit} @ ${gbp2.format(pl.rate)}${pl.local ? ' · local' : ''}` : ''
       o[`${sec}.${idx}.cost`] = pl ? gbp.format(pl.cost) : '—'
     })
   }

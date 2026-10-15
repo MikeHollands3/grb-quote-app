@@ -97,6 +97,7 @@ export interface PricedLine {
   qty: number
   unit: string
   rate: number
+  local: boolean
   cost: number
 }
 
@@ -121,20 +122,27 @@ export function libraryRate(lib: RateLibrary, item: string) {
   return lib.items.find((i) => i.item === item)
 }
 
+/** Library rate with the uplift applied — unless the rate is a local actual. */
+export function upliftedRate(lib: RateLibrary, item: string, mult: number) {
+  const r = libraryRate(lib, item)
+  return (r?.rate ?? 0) * (r?.local ? 1 : mult)
+}
+
 function priceLines(lines: QtyLine[], lib: RateLibrary, mult: number): PricedLine[] {
   return lines
     .filter((l) => l.item)
     .map((l) => {
       const r = libraryRate(lib, l.item)
-      const rate = (r?.rate ?? 0) * mult
-      return { item: l.item, qty: n(l.qty), unit: r?.unit ?? '?', rate, cost: n(l.qty) * rate }
+      const rate = upliftedRate(lib, l.item, mult)
+      return { item: l.item, qty: n(l.qty), unit: r?.unit ?? '?', rate, local: !!r?.local, cost: n(l.qty) * rate }
     })
 }
 
 export function footingsCost(f: DetailedInput['footings'], lib: RateLibrary, mult: number) {
   const concreteVolume = round1(n(f.length) * n(f.width) * n(f.concreteDepth) * (1 + n(f.overbreak)))
-  const baseRate = f.concreteRate ?? libraryRate(lib, CONCRETE_ITEM)?.rate ?? 0
-  const concrete = concreteVolume * baseRate * mult + n(f.surcharge)
+  // A typed-in override is a national rate (uplifted); otherwise use the library rate.
+  const concreteRate = f.concreteRate != null ? f.concreteRate * mult : upliftedRate(lib, CONCRETE_ITEM, mult)
+  const concrete = concreteVolume * concreteRate + n(f.surcharge)
   const excavatedVolume = round1(n(f.length) * n(f.width) * n(f.excavationDepth))
   const digRate = f.digMethod === 'Hand' ? f.handRate : f.machineRate
   const excavation = excavatedVolume * n(digRate) * mult
@@ -160,7 +168,7 @@ export function roofCost(r: DetailedInput['roof'], lib: RateLibrary, mult: numbe
 }
 
 export function electricalCost(e: DetailedInput['electrical'], lib: RateLibrary, mult: number) {
-  const pr = (k: keyof typeof POINT_ITEMS) => (libraryRate(lib, POINT_ITEMS[k])?.rate ?? 0) * mult
+  const pr = (k: keyof typeof POINT_ITEMS) => upliftedRate(lib, POINT_ITEMS[k], mult)
   const pointRates = { sockets: pr('sockets'), lights: pr('lights'), downlights: pr('downlights'), switches: pr('switches') }
   const rooms = e.rooms.map((rm) => ({
     name: rm.name,

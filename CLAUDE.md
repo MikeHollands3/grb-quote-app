@@ -33,7 +33,8 @@ Improvements". Keep the light/dark token system in `src/styles.css`. Drop the re
   plumbing are **subcontracted** (base + 20% subcontract markup); plant hire, waste/skips and other fees
   pass through **at cost**.
 - Regional uplift (South London, ×1.30) × inflation is applied to all rate-library rates, as in the workbook;
-  plant hire and waste are actual prices and are not uplifted.
+  plant hire and waste are actual prices and are not uplifted. Rate-library items flagged `local: true`
+  (prices from GRB's own South London invoices) are also used as-is — never uplift a local actual.
 - All rates live in `src/data/rates.json`. The full 118-line rate library (labour/materials/waste)
   lives in the Excel master in Google Drive — export it to JSON for the detailed estimator; don't
   hand-key it.

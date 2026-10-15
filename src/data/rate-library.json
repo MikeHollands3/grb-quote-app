@@ -929,6 +929,16 @@
       "source": "Estimate - verify"
     },
     {
+      "category": "Material",
+      "item": "Screened topsoil (grab load, delivered)",
+      "unit": "per load",
+      "rate": 250.0,
+      "low": 250.0,
+      "high": 250.0,
+      "source": "Fuller Grab Hire INV-3234, Sep 2026",
+      "local": true
+    },
+    {
       "category": "Waste",
       "item": "Mini skip (2-yard)",
       "unit": "each",

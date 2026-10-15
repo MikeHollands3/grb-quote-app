@@ -28,6 +28,8 @@ pip install openpyxl
 python3 scripts/export-rate-library.py "GRB Home Improvements - Pricing Tool.xlsx"
 ```
 
+Rates taken from GRB's own invoices are "local actuals" and skip the region/inflation uplift. To keep that flag through a re-export, add a column headed **Local actual** to the Labour & Materials tab and put **Yes** against those rows.
+
 ## Structure
 - `src/lib/pricing.ts` — quick-quote engine (unit-tested)
 - `src/lib/detailed.ts` — detailed-estimate engine; mirrors the workbook's Detailed Estimate tab and its feeder tabs, tests reconcile to the workbook's own example job
