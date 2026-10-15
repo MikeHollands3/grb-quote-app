@@ -34,7 +34,7 @@ Improvements". Keep the light/dark token system in `src/styles.css`. Drop the re
 
 ## Roadmap
 1. **Quick Quote (done in this starter)** — job / spec / area / region / roof -> indicative range.
-2. **Detailed estimator** — line items from the full rate library (labour days + material quantities),
+2. **Detailed estimator (done — mirrors the workbook's Detailed Estimate tab)** — line items from the full rate library (labour days + material quantities),
    groundworks/roof/electrical/plumbing/plant/waste sections, -> net, contingency, markup, VAT.
    Mirror the Excel tabs. Keep the engine pure + tested.
 3. **Branded PDF quote** — client-side (e.g. pdf-lib / jsPDF), GRB letterhead, payment schedule,

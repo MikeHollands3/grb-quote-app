@@ -2,6 +2,7 @@ import './styles.css'
 import ratesData from './data/rates.json'
 import { computeQuote, gbp } from './lib/pricing'
 import type { Rates, Spec } from './lib/types'
+import { mountDetailed } from './detailed-ui'
 
 const rates = ratesData as unknown as Rates
 
@@ -16,9 +17,13 @@ app.innerHTML = `
         <b>GRB</b>
         <span>Building &amp; Home Improvements</span>
       </div>
-      <div class="badge">Quick Quote</div>
+      <nav class="tabs" role="tablist">
+        <button type="button" role="tab" data-tab="quick" aria-selected="true">Quick</button>
+        <button type="button" role="tab" data-tab="detailed" aria-selected="false">Detailed</button>
+      </nav>
     </header>
 
+    <section id="quick">
     <h1>On-site ballpark estimator</h1>
     <p class="lede">Pick the job, the spec and the floor area for an indicative price range. For firm numbers, build it up on the detailed estimate from drawings.</p>
 
@@ -63,6 +68,9 @@ app.innerHTML = `
       <p><b>Indicative only — not a quotation.</b> Figures are £/m² benchmarks × floor area, with a regional uplift, ${Math.round(rates.inflation * 100)}% inflation since the rates were last checked, and 20% VAT. They scope a conversation; they don't replace a measured, drawings-based estimate.</p>
       <p>Budget = straightforward spec and finishes · Standard = typical mid-range · Premium = high-end finishes, structural complexity, bespoke joinery.</p>
     </div>
+    </section>
+
+    <section id="detailed" hidden></section>
 
     <footer>GRB Builders (London) Ltd · rates reviewed Oct 2026</footer>
   </div>
@@ -102,3 +110,30 @@ for (const id of ['job', 'spec', 'area', 'region', 'roof']) {
   $(id).addEventListener('change', calc)
 }
 calc()
+
+mountDetailed(document.getElementById('detailed')!)
+
+const TAB = 'grb.tab'
+function showTab(tab: string) {
+  for (const b of document.querySelectorAll<HTMLButtonElement>('[data-tab]')) {
+    const on = b.dataset.tab === tab
+    b.setAttribute('aria-selected', String(on))
+    document.getElementById(b.dataset.tab!)!.hidden = !on
+  }
+  try {
+    localStorage.setItem(TAB, tab)
+  } catch {
+    /* ignore */
+  }
+}
+document.querySelector('.tabs')!.addEventListener('click', (e) => {
+  const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-tab]')
+  if (b) showTab(b.dataset.tab!)
+})
+let initialTab = 'quick'
+try {
+  initialTab = localStorage.getItem(TAB) === 'detailed' ? 'detailed' : 'quick'
+} catch {
+  /* ignore */
+}
+showTab(initialTab)

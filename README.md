@@ -29,7 +29,10 @@ python3 scripts/export-rate-library.py "GRB Home Improvements - Pricing Tool.xls
 ```
 
 ## Structure
-- `src/lib/pricing.ts` — pure pricing engine (unit-tested)
+- `src/lib/pricing.ts` — quick-quote engine (unit-tested)
+- `src/lib/detailed.ts` — detailed-estimate engine; mirrors the workbook's Detailed Estimate tab and its feeder tabs, tests reconcile to the workbook's own example job
+- `src/detailed-ui.ts` — detailed-estimate screen (draft autosaves to this device)
+- `src/data/detailed-example.json` — the workbook's example job (30 Clowders Road)
 - `src/lib/types.ts` — shared types
 - `src/data/rates.json` — rate data
 - `src/main.ts` — DOM wiring

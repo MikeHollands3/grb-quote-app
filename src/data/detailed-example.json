@@ -1,0 +1,382 @@
+{
+  "jobRef": "30 Clowders Road",
+  "jobType": "Single-storey rear extension",
+  "area": 15,
+  "labour": [
+    {
+      "item": "General builder (multi-skilled)",
+      "qty": 35
+    },
+    {
+      "item": "Bricklayer",
+      "qty": 10
+    },
+    {
+      "item": "Carpenter / joiner",
+      "qty": 8
+    },
+    {
+      "item": "Plasterer",
+      "qty": 4
+    },
+    {
+      "item": "General labourer",
+      "qty": 20
+    },
+    {
+      "item": "Roofer",
+      "qty": 4
+    }
+  ],
+  "materials": [
+    {
+      "item": "Clay facing bricks",
+      "qty": 2
+    },
+    {
+      "item": "Concrete blocks 100mm (dense)",
+      "qty": 6
+    },
+    {
+      "item": "Timber C24 47x200mm 4.8m",
+      "qty": 24
+    },
+    {
+      "item": "PIR insulation 100mm 2400x1200",
+      "qty": 16
+    },
+    {
+      "item": "Plasterboard 12.5mm 2400x1200",
+      "qty": 30
+    },
+    {
+      "item": "uPVC casement window (supply)",
+      "qty": 2
+    },
+    {
+      "item": "Composite external door (supply)",
+      "qty": 1
+    }
+  ],
+  "footings": {
+    "include": true,
+    "length": 24,
+    "width": 0.6,
+    "concreteDepth": 1.5,
+    "excavationDepth": 1.0,
+    "overbreak": 0.07,
+    "concreteRate": null,
+    "digMethod": "Machine",
+    "machineRate": 100,
+    "handRate": 300,
+    "surcharge": 0
+  },
+  "roof": {
+    "include": true,
+    "covering": "Concrete tiles (pitched)",
+    "area": 28,
+    "structurePerM2": 40
+  },
+  "electrical": {
+    "include": true,
+    "override": 0,
+    "rooms": [
+      {
+        "name": "Kitchen",
+        "sockets": 8,
+        "lights": 1,
+        "downlights": 6,
+        "switches": 2
+      },
+      {
+        "name": "Living room",
+        "sockets": 6,
+        "lights": 1,
+        "downlights": 4,
+        "switches": 2
+      },
+      {
+        "name": "Dining room",
+        "sockets": 3,
+        "lights": 1,
+        "downlights": 0,
+        "switches": 1
+      },
+      {
+        "name": "Bedroom 1 (double)",
+        "sockets": 4,
+        "lights": 1,
+        "downlights": 0,
+        "switches": 1
+      },
+      {
+        "name": "Bedroom 2",
+        "sockets": 4,
+        "lights": 1,
+        "downlights": 0,
+        "switches": 1
+      },
+      {
+        "name": "Bedroom 3",
+        "sockets": 3,
+        "lights": 1,
+        "downlights": 0,
+        "switches": 1
+      },
+      {
+        "name": "Bathroom (no sockets)",
+        "sockets": 0,
+        "lights": 0,
+        "downlights": 3,
+        "switches": 1
+      },
+      {
+        "name": "Hall / landing",
+        "sockets": 1,
+        "lights": 2,
+        "downlights": 0,
+        "switches": 2
+      },
+      {
+        "name": "Home office / study",
+        "sockets": 6,
+        "lights": 1,
+        "downlights": 4,
+        "switches": 1
+      },
+      {
+        "name": "Utility",
+        "sockets": 3,
+        "lights": 1,
+        "downlights": 0,
+        "switches": 1
+      }
+    ],
+    "fixed": [
+      {
+        "item": "New radial / dedicated circuit",
+        "qty": 2
+      },
+      {
+        "item": "EICR / test & certification",
+        "qty": 1
+      },
+      {
+        "item": "Cooker / oven outlet point",
+        "qty": 1
+      },
+      {
+        "item": "Outdoor socket (IP-rated)",
+        "qty": 1
+      },
+      {
+        "item": "Consumer unit replacement (RCBO, certified)",
+        "qty": 0
+      },
+      {
+        "item": "EV charger install (7kW)",
+        "qty": 0
+      }
+    ]
+  },
+  "plumbing": {
+    "include": true,
+    "lines": [
+      {
+        "item": "Radiator (supply + fit)",
+        "qty": 0
+      },
+      {
+        "item": "Heated towel rail (supply + fit)",
+        "qty": 0
+      },
+      {
+        "item": "TRV / radiator valve (supply + fit)",
+        "qty": 0
+      },
+      {
+        "item": "Basin - connect & fit",
+        "qty": 0
+      },
+      {
+        "item": "Bath - connect & fit",
+        "qty": 0
+      },
+      {
+        "item": "Shower - mixer/electric install",
+        "qty": 0
+      },
+      {
+        "item": "WC - connect & fit",
+        "qty": 1
+      },
+      {
+        "item": "Kitchen sink + tap - connect",
+        "qty": 1
+      },
+      {
+        "item": "Washing machine point (plumb in)",
+        "qty": 1
+      },
+      {
+        "item": "Dishwasher point (plumb in)",
+        "qty": 1
+      },
+      {
+        "item": "Outside tap",
+        "qty": 1
+      },
+      {
+        "item": "First-fix pipework allowance (per wet room)",
+        "qty": 0
+      },
+      {
+        "item": "Combi boiler replacement (supply + fit)",
+        "qty": 0
+      },
+      {
+        "item": "System boiler + cylinder upgrade",
+        "qty": 0
+      },
+      {
+        "item": "Hot water cylinder (unvented, supply+fit)",
+        "qty": 0
+      },
+      {
+        "item": "Power flush + magnetic filter",
+        "qty": 1
+      },
+      {
+        "item": "Heating controls / smart thermostat",
+        "qty": 2
+      },
+      {
+        "item": "Gas pipe upgrade (15-22mm)",
+        "qty": 0
+      },
+      {
+        "item": "Wet underfloor heating (per m2, supply+fit)",
+        "qty": 36
+      },
+      {
+        "item": "Gas Safe commissioning / Benchmark cert",
+        "qty": 1
+      }
+    ]
+  },
+  "plant": {
+    "include": true,
+    "delivery": 150,
+    "lines": [
+      {
+        "item": "Mini excavator 1.5t (self-drive)",
+        "qty": 1,
+        "weeks": 1
+      },
+      {
+        "item": "Tracked dumper 1t",
+        "qty": 1,
+        "weeks": 1
+      },
+      {
+        "item": "Wacker plate / compactor",
+        "qty": 1,
+        "weeks": 1
+      },
+      {
+        "item": "Cement mixer (diesel/electric)",
+        "qty": 1,
+        "weeks": 2
+      },
+      {
+        "item": "Scaffold tower (alloy 4-6m)",
+        "qty": 1,
+        "weeks": 2
+      }
+    ]
+  },
+  "waste": {
+    "include": true,
+    "onHighway": false,
+    "lines": [
+      {
+        "item": "Mini skip (2-yard)",
+        "qty": 0
+      },
+      {
+        "item": "Midi skip (4-yard)",
+        "qty": 0
+      },
+      {
+        "item": "Builder skip (6-yard)",
+        "qty": 0
+      },
+      {
+        "item": "Builder skip (8-yard)",
+        "qty": 1
+      },
+      {
+        "item": "Maxi skip (12-yard)",
+        "qty": 0
+      },
+      {
+        "item": "Roll-on/roll-off (20-yard)",
+        "qty": 0
+      },
+      {
+        "item": "Roll-on/roll-off (40-yard)",
+        "qty": 0
+      },
+      {
+        "item": "Grab lorry (4-wheel, 7-9t)",
+        "qty": 0
+      },
+      {
+        "item": "Grab lorry (6-wheel, 12-14t)",
+        "qty": 0
+      },
+      {
+        "item": "Grab lorry (8-wheel, 16-18t)",
+        "qty": 0
+      },
+      {
+        "item": "Muck-away (per m3, general spoil)",
+        "qty": 0
+      },
+      {
+        "item": "Council skip permit / licence",
+        "qty": 1
+      },
+      {
+        "item": "Wait-and-load skip (no permit)",
+        "qty": 0
+      },
+      {
+        "item": "Heavy waste surcharge (soil/rubble)",
+        "qty": 0
+      },
+      {
+        "item": "Skip lights / cones",
+        "qty": 0
+      }
+    ]
+  },
+  "fees": [
+    {
+      "description": "Structural engineer - extension calcs",
+      "amount": 0
+    },
+    {
+      "description": "Building Control - extension (full plans)",
+      "amount": 900
+    },
+    {
+      "description": "Sundries / consumables",
+      "amount": 500
+    }
+  ],
+  "accessPct": 0.1,
+  "contingencyPct": 0.2,
+  "markupPct": 0.2,
+  "subcontractFeePct": 0.2
+}
