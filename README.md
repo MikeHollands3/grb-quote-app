@@ -15,6 +15,9 @@ npm run build      # production build -> dist/ (service worker + manifest genera
 npm run preview    # preview the built app
 ```
 
+## Google Drive saving
+See [docs/google-drive-setup.md](docs/google-drive-setup.md) — needs `VITE_GOOGLE_CLIENT_ID` from the GRB Workspace's Google Cloud project.
+
 ## Deploy
 `dist/` is a static bundle. Host anywhere static: Cloudflare Pages, Vercel, Netlify, or a folder behind nginx. HTTPS is required for the service worker / install.
 

@@ -22,12 +22,14 @@ export function mountSaved(root: HTMLElement, opts: SavedOptions) {
   let filter = ''
   let message = ''
 
-  const row = (q: SavedQuote) => `
+  const row = (q: SavedQuote) => {
+    const badge = opts.badge?.(q)
+    return `
     <li class="saved${q.id === opts.currentId() ? ' current' : ''}">
       <button type="button" class="saved-main" data-open="${q.id}">
         <span class="saved-ref">${esc(q.ref || 'No ref')}</span>
         <span class="saved-addr">${esc(q.address || q.client || 'No address')}</span>
-        <span class="saved-meta">${esc(q.client)}${q.client ? ' · ' : ''}Updated ${when(q.updatedAt)}${opts.badge ? ` · ${opts.badge(q)}` : ''}</span>
+        <span class="saved-meta">${esc(q.client)}${q.client ? ' · ' : ''}Updated ${when(q.updatedAt)}${badge ? ` · ${badge}` : ''}</span>
       </button>
       <span class="saved-total">${gbp2.format(q.total)}</span>
       <span class="saved-actions">
@@ -35,6 +37,7 @@ export function mountSaved(root: HTMLElement, opts: SavedOptions) {
         <button type="button" class="ghost small danger" data-delete="${q.id}">Delete</button>
       </span>
     </li>`
+  }
 
   const render = () => {
     const f = filter.trim().toLowerCase()

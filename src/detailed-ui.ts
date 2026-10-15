@@ -434,6 +434,8 @@ function outputs(r: DetailedResult, s: State): Record<string, string> {
 export interface DetailedOptions {
   /** Called after a quote is saved on this device (e.g. to queue a Drive upload). */
   onSaved?: (q: SavedQuote) => void
+  /** Called synchronously at the start of a Save / PDF tap (e.g. to re-authorise Drive inside the gesture). */
+  beforeSave?: () => void
 }
 
 export function mountDetailed(root: HTMLElement, opts: DetailedOptions = {}) {
@@ -558,6 +560,7 @@ export function mountDetailed(root: HTMLElement, opts: DetailedOptions = {}) {
       const idx = Number(parts.pop())
       ;(getAt(i, parts.join('.')) as unknown[]).splice(idx, 1)
     } else if (btn.dataset.action === 'save') {
+      opts.beforeSave?.()
       btn.disabled = true
       void saveQuote()
         .catch((err) => alert(`Couldn't save: ${(err as Error).message}`))
@@ -567,6 +570,7 @@ export function mountDetailed(root: HTMLElement, opts: DetailedOptions = {}) {
       state = exampleState()
       savedSnapshot = null
     } else if (btn.dataset.action === 'pdf') {
+      opts.beforeSave?.()
       void createPdf(btn)
       return
     } else if (btn.dataset.action === 'clear') {

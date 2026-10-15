@@ -4,6 +4,8 @@ import { computeQuote, gbp } from './lib/pricing'
 import type { Rates, Spec } from './lib/types'
 import { mountDetailed } from './detailed-ui'
 import { mountSaved } from './saved-ui'
+import { createDriveSync, HOSTED_DOMAIN } from './drive-sync'
+import type { SavedQuote } from './lib/saved'
 
 const rates = ratesData as unknown as Rates
 
@@ -115,8 +117,50 @@ for (const id of ['job', 'spec', 'area', 'region', 'roof']) {
 }
 calc()
 
-const detailed = mountDetailed(document.getElementById('detailed')!)
+const drive = createDriveSync()
+const escHtml = (s: string) =>
+  s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
+
+function driveCard(): string {
+  const st = drive.state()
+  if (st.kind === 'unconfigured')
+    return `<div class="card drive"><p class="hint">Google Drive saving isn’t switched on in this build yet.</p></div>`
+  if (st.kind === 'disconnected')
+    return `<div class="card drive">
+      <h3>Google Drive</h3>
+      <p class="hint">Save every quote (PDF + editable copy) to a “GRB Quotes” folder in your GRB Google Drive. Use your @${HOSTED_DOMAIN} account.</p>
+      ${st.error ? `<p class="drive-error">${escHtml(st.error)}</p>` : ''}
+      <button type="button" class="primary" data-drive="connect">Connect Google Drive</button>
+    </div>`
+  const status = st.syncing
+    ? 'Uploading…'
+    : st.pending
+      ? `${st.pending} quote${st.pending === 1 ? '' : 's'} waiting to upload`
+      : 'All quotes uploaded'
+  return `<div class="card drive">
+    <h3>Google Drive <span class="tag tag-in-house">connected</span></h3>
+    <p class="hint">${escHtml(st.email)} · ${status}${!navigator.onLine ? ' · offline' : ''}</p>
+    ${st.error ? `<p class="drive-error">${escHtml(st.error)}</p>` : ''}
+    <div class="actions">
+      <button type="button" class="ghost" data-drive="sync" ${st.syncing ? 'disabled' : ''}>${st.needsSignIn ? 'Sign in &amp; sync' : 'Sync now'}</button>
+      ${st.folderId ? `<a class="ghost file-btn" href="https://drive.google.com/drive/folders/${encodeURIComponent(st.folderId)}" target="_blank" rel="noopener">Open folder</a>` : ''}
+    </div>
+    <button type="button" class="linkish" data-drive="disconnect">Disconnect Google Drive on this device</button>
+  </div>`
+}
+
+function driveBadge(q: SavedQuote): string {
+  if (drive.state().kind !== 'connected') return ''
+  return q.drive?.status === 'synced' ? 'On Drive ✓' : q.drive?.status === 'error' ? 'Upload failed' : 'Waiting to upload'
+}
+
+const detailed = mountDetailed(document.getElementById('detailed')!, {
+  beforeSave: () => drive.beforeSave(),
+  onSaved: () => drive.afterSave(),
+})
 const saved = mountSaved(document.getElementById('saved')!, {
+  header: driveCard,
+  badge: driveBadge,
   onOpen: (q) => {
     detailed.open(q)
     showTab('detailed')
@@ -124,6 +168,17 @@ const saved = mountSaved(document.getElementById('saved')!, {
   },
   onDeleted: (id) => detailed.forget(id),
   currentId: () => detailed.currentId(),
+})
+
+drive.subscribe(() => {
+  if (!document.getElementById('saved')!.hidden) void saved.refresh()
+})
+document.getElementById('saved')!.addEventListener('click', (e) => {
+  const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-drive]')
+  if (!b) return
+  if (b.dataset.drive === 'disconnect') {
+    if (confirm('Disconnect Google Drive on this device? Quotes already on Drive stay there.')) drive.disconnect()
+  } else drive.connectOrSync()
 })
 
 const TAB = 'grb.tab'
