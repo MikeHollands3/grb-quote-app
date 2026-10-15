@@ -1,0 +1,13 @@
+// Cloudflare config, only used if the app is deployed as a Worker with static
+// assets (the dashboard's newer "Workers" import flow: build `npm run build`,
+// deploy `npx wrangler deploy`). A classic Cloudflare Pages project ignores this
+// file and uses its own build settings (output directory `dist`).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "grb-quote-app",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
