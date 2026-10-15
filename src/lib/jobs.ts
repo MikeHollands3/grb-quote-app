@@ -58,6 +58,8 @@ export interface Job {
   quoteId: string
   ref: string
   client: string
+  /** Used by Xero to email invoices. */
+  clientEmail?: string
   address: string
   jobType: string
   acceptedOn: string
@@ -182,12 +184,14 @@ export function planPayments(opts: {
 }
 
 /**
- * Re-date payments after the start date or terms change. Payments already
- * invoiced or paid keep their dates (the invoice has gone out).
+ * Re-date payments after the accepted date, start date or terms change.
+ * Payments already invoiced or paid keep their dates (the invoice has gone out).
  */
 export function redatePayments(job: Job): JobPayment[] {
   return job.payments.map((p, i) => {
-    if (p.status !== 'scheduled' || i === 0) return p
+    if (p.status !== 'scheduled') return p
+    // Deposit: invoiced and due on acceptance.
+    if (i === 0) return { ...p, invoiceDate: job.acceptedOn, due: job.acceptedOn }
     const invoiceDate = addDays(job.startDate, (i - 1) * 7)
     return { ...p, invoiceDate, due: addDays(invoiceDate, job.termsDays) }
   })

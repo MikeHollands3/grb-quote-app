@@ -52,16 +52,21 @@ Improvements". Keep the light/dark token system in `src/styles.css`. Drop the re
    sign-in, `drive.file` scope, GRB Workspace accounts only — setup in `docs/google-drive-setup.md`).
 5. **Deploy** — Cloudflare Pages from GitHub (`main` → production), custom domain app.grbhomeimprovements.co.uk
    (CNAME in Squarespace DNS). Build `npm run build` → `dist`; Node from `.nvmrc`; headers in `public/_headers`.
-6. **Jobs & money in (parts 1–2 done)** — "Won → job" on a quote (`src/job-from-quote.ts`): start date, stage programme
+6. **Jobs & money in (done)** — "Won → job" on a quote (`src/job-from-quote.ts`): start date, stage programme
    with who (team + subbies by name, `src/lib/jobs.ts`), one invoice per payment (deposit on acceptance, weekly
    invoices each programme Monday, due after `termsDays`). Jobs and Money tabs. Part 2 done (`src/jobs-sync.ts`,
    `src/lib/job-google.ts`, `src/lib/gapi.ts`): "GRB Jobs" calendar (one all-day event per stage: who/what/where,
    coloured by trade), "GRB Payments" calendar (unpaid payments on due dates) and a "GRB Jobs & Payments" sheet
    (Payments + Programme tabs, merged by job id so several devices can sync). Scopes: drive.file +
    calendar.app.created only; ids shared across a person's devices via "GRB app settings.json" in the Drive folder.
-   Still to do: (3) direct Xero link — create each invoice in Xero when due and read paid
-   status back. Xero's API can't be called from the browser, so this needs a small server (e.g. a Cloudflare
-   Worker holding the Xero tokens); the user has approved that exception to "no backend".
+   Part 3 done — Xero: Cloudflare Pages Functions at `/api/xero/*` (`functions/`; the one approved exception to
+   "no backend"). Server keeps the rotating Xero refresh token in KV (`XERO_KV`), secrets in Pages env
+   (`XERO_CLIENT_ID`, `XERO_CLIENT_SECRET`), and only serves callers with a GRB Google token for this app's OAuth
+   client. Granular scopes (app created after 2 Mar 2026): offline_access accounting.invoices
+   accounting.payments.read accounting.contacts accounting.settings.read. Invoices: ACCREC, VAT-inclusive,
+   OUTPUT2, account code from the app (default 200), Draft or Approved+email, idempotency key = payment id.
+   Money tab: Create in Xero / Create all / Check payments (auto every 10 min when the tab opens).
+   Setup: `docs/xero-setup.md`. Typecheck functions with `npx tsc -p functions`.
 
 ## Commands
 `npm install` · `npm run dev` · `npm run test` · `npm run build` · `npm run preview`

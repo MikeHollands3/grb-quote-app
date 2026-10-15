@@ -233,3 +233,4 @@ h2.late,h2.late .h-total{color:#b3261e}
 li.money{display:grid;grid-template-columns:1fr auto;gap:.2rem .6rem;padding:.75rem 0;border-bottom:1px solid var(--border)}
 li.money:last-child{border-bottom:0}
 button.won{border-color:var(--accent);color:var(--accent-ink)}
+.hint.ok{color:var(--accent-ink);font-weight:600}

@@ -68,9 +68,9 @@ describe('planPayments', () => {
   it('re-dating after a start-date slip leaves invoiced and paid payments alone', () => {
     const payments = plan()
     payments[1].status = 'invoiced'
-    const job = { startDate: '2026-11-09', termsDays: 7, payments } as Job
+    const job = { acceptedOn: '2026-10-20', startDate: '2026-11-09', termsDays: 7, payments } as Job
     const r = redatePayments(job)
-    expect(r[0].invoiceDate).toBe('2026-10-15')
+    expect(r[0]).toMatchObject({ invoiceDate: '2026-10-20', due: '2026-10-20' }) // deposit follows acceptance
     expect(r[1].invoiceDate).toBe('2026-11-02') // already invoiced
     expect(r[2].invoiceDate).toBe('2026-11-16') // week 2 moved a week
   })

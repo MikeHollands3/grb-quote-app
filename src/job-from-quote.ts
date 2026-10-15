@@ -21,6 +21,7 @@ export function jobFromQuote(q: SavedQuote, opts: { acceptedOn?: string; startDa
     quoteId: q.id,
     ref: s.quote.ref,
     client: s.quote.clientName,
+    clientEmail: s.quote.clientEmail?.trim() || undefined,
     address: s.quote.clientAddress.split('\n').map((l) => l.trim()).filter(Boolean).join(', '),
     jobType: s.input.jobType,
     acceptedOn,

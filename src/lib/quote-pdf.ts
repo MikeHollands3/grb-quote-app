@@ -25,6 +25,8 @@ export interface QuoteDoc {
   durationWeeks: number
   drawings: string
   clientName: string
+  /** Not printed; carried to the job so Xero can email invoices. */
+  clientEmail?: string
   clientAddress: string
   salutation: string
   letter: string

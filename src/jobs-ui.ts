@@ -141,6 +141,7 @@ export function mountJobs(root: HTMLElement, opts: JobsOptions) {
           <div class="field"><label>Accepted</label><input type="date" data-j="acceptedOn" value="${esc(j.acceptedOn)}"></div>
           <div class="field"><label>Start on site</label><input type="date" data-j="startDate" value="${esc(j.startDate)}"></div>
         </div>
+        <div class="field"><label>Client email (for Xero invoices)</label><input type="email" inputmode="email" data-j="clientEmail" value="${esc(j.clientEmail ?? '')}" placeholder="name@example.com"></div>
         <div class="row">
           <div class="field"><label>Weeks</label><input type="number" min="0" step="1" inputmode="numeric" data-j="weeks" data-num value="${j.weeks}"></div>
           <div class="field"><label>Payment terms (days)</label><input type="number" min="0" step="1" inputmode="numeric" data-j="termsDays" data-num value="${j.termsDays}"></div>
@@ -221,7 +222,7 @@ export function mountJobs(root: HTMLElement, opts: JobsOptions) {
       else target[key] = value
       if (path[0] === 'payments' && key === 'status' && value === 'paid') target.paidOn ??= todayIso()
       if (path[0] === 'payments' && key === 'status' && value !== 'paid') delete target.paidOn
-      if (key === 'startDate' || key === 'termsDays') j.payments = redatePayments(j)
+      if (key === 'startDate' || key === 'termsDays' || key === 'acceptedOn') j.payments = redatePayments(j)
       await saveJob(j)
       render()
     } else if (el.dataset.p) {

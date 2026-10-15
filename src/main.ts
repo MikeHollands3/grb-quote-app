@@ -7,6 +7,7 @@ import { mountSaved } from './saved-ui'
 import { createDriveSync, HOSTED_DOMAIN } from './drive-sync'
 import { mountJobs } from './jobs-ui'
 import { createJobsSync } from './jobs-sync'
+import { createXeroLink } from './xero-link'
 import { mountMoney } from './money-ui'
 import { jobFromQuote } from './job-from-quote'
 import { jobsChanged, listJobs, onJobsChanged, putJob } from './lib/jobs-store'
@@ -235,7 +236,9 @@ const jobsUi = mountJobs(document.getElementById('jobs')!, {
     window.scrollTo(0, 0)
   },
 })
+const xero = createXeroLink(drive)
 const money = mountMoney(document.getElementById('money')!, {
+  xero,
   onOpenJob: (id) => {
     showTab('jobs')
     void jobsUi.show(id)
@@ -287,7 +290,7 @@ function showTab(tab: string) {
   }
   if (tab === 'saved') void loadJobIndex().then(saved.refresh)
   if (tab === 'jobs') void jobsUi.refresh()
-  if (tab === 'money') void money.refresh()
+  if (tab === 'money') money.show()
   try {
     localStorage.setItem(TAB, tab)
   } catch {
@@ -306,3 +309,14 @@ try {
   /* ignore */
 }
 showTab(initialTab)
+
+// Back from Xero's consent page: /?xero=connected or /?xero=error&msg=…
+{
+  const q = new URLSearchParams(location.search)
+  const r = q.get('xero')
+  if (r === 'connected' || r === 'error') {
+    xero.handleReturn(r, q.get('msg') ?? undefined)
+    history.replaceState(null, '', location.pathname)
+    showTab('money')
+  }
+}

@@ -349,6 +349,7 @@ function view(s: State) {
     </div>
     ${field('Drawings ref (optional)', text('quote.drawings', s.quote.drawings, 'placeholder="e.g. BR1 & BR2 (May 2026)"'))}
     ${field('Client name', text('quote.clientName', s.quote.clientName))}
+    ${field('Client email', `<input type="email" inputmode="email" data-path="quote.clientEmail" data-type="text" value="${esc(s.quote.clientEmail ?? '')}" placeholder="For emailing invoices from Xero">`)}
     ${field('Client address', area('quote.clientAddress', s.quote.clientAddress, 3))}
     ${field('Salutation', text('quote.salutation', s.quote.salutation, 'placeholder="Dear Mr & Mrs …,"'))}
     ${field('Letter', area('quote.letter', s.quote.letter, 8), 'Blank line between paragraphs')}
