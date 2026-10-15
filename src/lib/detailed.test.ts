@@ -6,13 +6,11 @@ import type { RateLibrary } from './types'
 
 const lib = libData as unknown as RateLibrary
 const example = () => structuredClone(exampleData) as DetailedInput
-// The workbook example uses 20% contingency; the app defaults to 12% pre-drawings.
-const workbookExample = () => ({ ...example(), contingencyPct: 0.2 })
 // London (+30%) × 3% inflation, VAT registered — the workbook's Start Here settings.
 const settings: Settings = { uplift: 1.3 * 1.03, vatRegistered: true, vat: 0.2 }
 
-describe('computeDetailed — reconciles to the workbook example (30 Clowders Road)', () => {
-  const r = computeDetailed(workbookExample(), lib, settings)
+describe('computeDetailed — line items and feeder tabs reconcile to the workbook example (30 Clowders Road)', () => {
+  const r = computeDetailed(example(), lib, settings)
 
   it('labour and materials', () => {
     expect(r.labour[0].rate).toBeCloseTo(294.58, 2)
@@ -37,31 +35,53 @@ describe('computeDetailed — reconciles to the workbook example (30 Clowders Ro
     expect(r.waste.total).toBe(330)
   })
 
-  it('price build-up', () => {
+  it('section 3 total matches the workbook', () => {
     expect(r.feesTotal).toBeCloseTo(31333.4525, 2)
-    expect(r.access).toBeCloseTo(2691.1222, 2)
-    expect(r.direct).toBeCloseTo(29602.3442, 2)
-    expect(r.contingency).toBeCloseTo(5920.46884, 2)
-    expect(r.markup).toBeCloseTo(7104.562608, 2)
-    expect(r.subcontract).toBeCloseTo(37600.143, 2)
-    expect(r.net).toBeCloseTo(80227.51865, 2)
-    expect(r.vat).toBeCloseTo(16045.50373, 2)
-    expect(r.total).toBeCloseTo(96273.02238, 2)
-    expect(r.perM2).toBeCloseTo(6418.201492, 2)
+  })
+})
+
+describe('computeDetailed — GRB price build-up on the workbook example', () => {
+  // Built from the workbook's own feeder values so each step is traceable.
+  const lm = 21343.66 + 5567.562
+  const access = lm * 0.1 // 2691.1222
+  const footings = 5794.5225
+  const subbed = 4686.5 + 10551.32 + 7351.11 // roof + electrics + plumbing
+  const atCost = 1220 + 330 + 1400 // plant + waste + other fees
+  const direct = lm + access + footings
+  const contingency = direct * 0.12
+  const markup = (direct + contingency) * 0.2
+  const mgmtFee = subbed * 0.2
+  const net = direct + contingency + markup + subbed + mgmtFee + atCost
+
+  const r = computeDetailed(example(), lib, settings)
+
+  it('footings are in-house direct works', () => {
+    expect(r.footingsInHouse).toBeCloseTo(footings, 2)
+    expect(r.direct).toBeCloseTo(direct, 2)
+    expect(r.contingency).toBeCloseTo(contingency, 2)
+    expect(r.markup).toBeCloseTo(markup, 2)
   })
 
-  it('margin breakdown', () => {
-    expect(r.margin.mgmtFee).toBeCloseTo(37600.143 - 31333.4525, 2)
-    expect(r.margin.totalMarkup).toBeCloseTo(7104.562608 + 6266.6905, 2)
-    expect(r.margin.pct).toBeCloseTo(r.margin.totalMarkup / r.net, 6)
+  it('only roof, electrics and plumbing carry the subcontract markup', () => {
+    expect(r.subcontractBase).toBeCloseTo(subbed, 2)
+    expect(r.margin.mgmtFee).toBeCloseTo(mgmtFee, 2)
+    expect(r.subcontract).toBeCloseTo(subbed + mgmtFee, 2)
+  })
+
+  it('plant, waste and fees pass through at cost', () => {
+    expect(r.atCost).toBe(atCost)
+  })
+
+  it('net, VAT and total', () => {
+    expect(r.net).toBeCloseTo(net, 2)
+    expect(r.vat).toBeCloseTo(net * 0.2, 2)
+    expect(r.total).toBeCloseTo(net * 1.2, 2)
+    expect(r.margin.totalMarkup).toBeCloseTo(markup + mgmtFee, 2)
+    expect(r.margin.costBase).toBeCloseTo(direct + subbed + atCost, 2)
   })
 })
 
 describe('computeDetailed — switches and edge cases', () => {
-  it('defaults to 12% pre-drawings contingency', () => {
-    const r = computeDetailed(example(), lib, settings)
-    expect(r.contingency).toBeCloseTo(29602.3442 * 0.12, 2)
-  })
 
   it('charges the skip permit only when the skip is on the highway', () => {
     const input = example()
@@ -84,7 +104,10 @@ describe('computeDetailed — switches and edge cases', () => {
   it('excluded packages contribute nothing', () => {
     const input = example()
     for (const k of ['footings', 'roof', 'electrical', 'plumbing', 'plant', 'waste'] as const) input[k].include = false
-    expect(computeDetailed(input, lib, settings).feesTotal).toBe(1400)
+    const r = computeDetailed(input, lib, settings)
+    expect(r.feesTotal).toBe(1400)
+    expect(r.footingsInHouse).toBe(0)
+    expect(r.subcontractBase).toBe(0)
   })
 
   it('plant and waste are not uplifted', () => {

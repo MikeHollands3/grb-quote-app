@@ -152,3 +152,8 @@ dl.calc dd{margin:0;text-align:right;font-weight:700;font-variant-numeric:tabula
 details.margin{margin-top:.8rem}
 .room input[type=text]{font-size:.8rem;padding-inline:.45rem}
 .bu-note{margin-top:-.2rem}.bu-note .check{font-size:.78rem;font-weight:500;color:var(--muted)}
+.tag{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.18rem .4rem;border-radius:.3rem;white-space:nowrap}
+.tag-in-house{background:var(--accent-soft);color:var(--accent-ink)}
+.tag-subbed{background:color-mix(in srgb,#c98a1b 18%,transparent);color:color-mix(in srgb,#c98a1b 70%,var(--fg))}
+.tag-at-cost{background:var(--surface-2);color:var(--muted);border:1px solid var(--border)}
+h3 .tag{margin-left:.4rem;vertical-align:1px}

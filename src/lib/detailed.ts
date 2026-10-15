@@ -8,6 +8,10 @@ import type { RateLibrary } from './types'
  * Rate-library rates are multiplied by the region × inflation uplift, exactly
  * as the workbook does. Plant hire and waste are actual local prices and are
  * NOT uplifted.
+ *
+ * The price build-up follows GRB's practice rather than the workbook's: footings
+ * are in-house direct works, roof/electrics/plumbing are subcontracted and
+ * marked up, and plant, waste and fees pass through at cost.
  */
 
 export interface QtyLine {
@@ -93,6 +97,8 @@ export interface PricedLine {
   rate: number
   cost: number
 }
+
+export type Treatment = 'inHouse' | 'subcontract' | 'atCost'
 
 export const CONTINGENCY = { preDrawings: 0.12, confirmed: 0.08 } as const
 
@@ -208,26 +214,35 @@ export function computeDetailed(input: DetailedInput, lib: RateLibrary, s: Setti
   const plant = plantCost(input.plant, lib)
   const waste = wasteCost(input.waste, lib)
 
+  // How GRB treats each package (differs from the workbook, which marks up all of section 3):
+  //   inHouse     — own team; part of direct works, so it carries contingency + overhead & profit
+  //   subcontract — subbed trades; base cost + subcontract markup
+  //   atCost      — plant, skips and fees; passed through with no markup
   const packages = [
-    { key: 'footings', label: 'Footings', amount: input.footings.include ? footings.total : 0 },
-    { key: 'roof', label: 'Roof (midpoint)', amount: input.roof.include ? roof.mid : 0 },
-    { key: 'electrical', label: 'Electrics', amount: input.electrical.include ? electrical.total : 0 },
-    { key: 'plumbing', label: 'Plumbing & heating', amount: input.plumbing.include ? plumbing.total : 0 },
-    { key: 'plant', label: 'Plant hire', amount: input.plant.include ? plant.total : 0 },
-    { key: 'waste', label: 'Waste & muck-away', amount: input.waste.include ? waste.total : 0 },
+    { key: 'footings', label: 'Footings', treatment: 'inHouse', amount: input.footings.include ? footings.total : 0 },
+    { key: 'roof', label: 'Roof (midpoint)', treatment: 'subcontract', amount: input.roof.include ? roof.mid : 0 },
+    { key: 'electrical', label: 'Electrics', treatment: 'subcontract', amount: input.electrical.include ? electrical.total : 0 },
+    { key: 'plumbing', label: 'Plumbing & heating', treatment: 'subcontract', amount: input.plumbing.include ? plumbing.total : 0 },
+    { key: 'plant', label: 'Plant hire', treatment: 'atCost', amount: input.plant.include ? plant.total : 0 },
+    { key: 'waste', label: 'Waste & muck-away', treatment: 'atCost', amount: input.waste.include ? waste.total : 0 },
   ] as const
-  const feesTotal = sum(packages.map((p) => p.amount)) + sum(input.fees.map((f) => n(f.amount)))
+  const by = (t: Treatment) => sum(packages.filter((p) => p.treatment === t).map((p) => p.amount))
+  const footingsInHouse = by('inHouse')
+  const subcontractBase = by('subcontract')
+  const otherFees = sum(input.fees.map((f) => n(f.amount)))
+  const atCost = by('atCost') + otherFees
+  const feesTotal = sum(packages.map((p) => p.amount)) + otherFees
 
   const access = (labourTotal + materialsTotal) * n(input.accessPct)
-  const direct = labourTotal + materialsTotal + access
+  const direct = labourTotal + materialsTotal + access + footingsInHouse
   const contingency = direct * n(input.contingencyPct)
   const markup = (direct + contingency) * n(input.markupPct)
-  const subcontract = feesTotal * (1 + n(input.subcontractFeePct))
-  const net = direct + contingency + markup + subcontract
+  const mgmtFee = subcontractBase * n(input.subcontractFeePct)
+  const subcontract = subcontractBase + mgmtFee
+  const net = direct + contingency + markup + subcontract + atCost
   const vat = s.vatRegistered ? net * s.vat : 0
   const total = net + vat
 
-  const mgmtFee = subcontract - feesTotal
   const totalMarkup = markup + mgmtFee
 
   return {
@@ -243,6 +258,9 @@ export function computeDetailed(input: DetailedInput, lib: RateLibrary, s: Setti
     waste,
     packages,
     feesTotal,
+    footingsInHouse,
+    subcontractBase,
+    atCost,
     access,
     direct,
     contingency,
@@ -253,7 +271,7 @@ export function computeDetailed(input: DetailedInput, lib: RateLibrary, s: Setti
     total,
     perM2: input.area > 0 ? total / input.area : 0,
     margin: {
-      costBase: direct + feesTotal,
+      costBase: direct + subcontractBase + atCost,
       mgmtFee,
       totalMarkup,
       pct: net ? totalMarkup / net : 0,

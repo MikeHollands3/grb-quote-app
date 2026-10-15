@@ -127,13 +127,24 @@ function fixedRows(section: string, lines: { item: string; qty: number }[]) {
     .join('')
 }
 
+const TAGS: Record<string, [string, string]> = {
+  footings: ['in-house', 'Own team — in direct works, carries contingency and overhead &amp; profit.'],
+  roof: ['subbed', 'Subcontracted — base cost plus the subcontract markup.'],
+  electrical: ['subbed', 'Subcontracted — base cost plus the subcontract markup.'],
+  plumbing: ['subbed', 'Subcontracted — base cost plus the subcontract markup.'],
+  plant: ['at cost', 'Passed through at cost — no markup.'],
+  waste: ['at cost', 'Passed through at cost — no markup.'],
+}
+
 function pkg(key: string, title: string, body: string, s: State) {
   const inc = (s.input as any)[key].include as boolean
+  const [tag, note] = TAGS[key]
   return `
     <details class="pkg" data-pkg="${key}">
-      <summary><span>${title}</span>${out(`pkg.${key}`, 'cost')}</summary>
+      <summary><span>${title}</span><span class="tag tag-${tag.replace(' ', '-')}">${tag}</span>${out(`pkg.${key}`, 'cost')}</summary>
       <div class="pkg-body">
         ${check(`${key}.include`, inc, 'Include in this estimate')}
+        <p class="hint">${note}</p>
         ${body}
       </div>
     </details>`
@@ -144,7 +155,7 @@ function view(s: State) {
   const plantNames = lib.plantHire.map((p) => p.item)
   return `
   <h1>Detailed estimate</h1>
-  <p class="lede">Build a priced quote from labour days, materials and subcontract packages. Rates come from the rate library with the region and ${Math.round(rates.inflation * 100)}% inflation uplift, same as the Excel pricing tool.</p>
+  <p class="lede">Build a priced quote from labour days, materials and subcontract packages. Rates come from the rate library with the region and ${Math.round(rates.inflation * 100)}% inflation uplift. Footings are priced as in-house work, roof, electrics and plumbing as subcontracted, and plant, skips and fees at cost.</p>
 
   <div class="card">
     ${field('Job ref / client', text('input.jobRef', i.jobRef, 'placeholder="e.g. 30 Clowders Road"'))}
@@ -250,7 +261,7 @@ function view(s: State) {
       s,
     )}
     <div class="card fees">
-      <h3>Other fees</h3>
+      <h3>Other fees <span class="tag tag-at-cost">at cost</span></h3>
       <datalist id="fee-items">${lib.fees.map((f) => `<option value="${esc(f.item)}">£${f.low}–£${f.high} ${esc(f.unit)}</option>`).join('')}</datalist>
       ${i.fees
         .map(
@@ -269,11 +280,14 @@ function view(s: State) {
   <div class="card buildup">
     <div class="bu"><span>Labour + materials</span>${out('lm')}</div>
     <div class="bu"><span>Restricted access / double handling</span>${pctInput('input.accessPct', i.accessPct, 'Access uplift percent')}${out('access')}</div>
+    <div class="bu"><span>Footings (in-house)</span>${out('footingsInHouse')}</div>
     <div class="bu strong"><span>Direct works</span>${out('direct')}</div>
     <div class="bu"><span>Contingency on direct works</span>${pctInput('input.contingencyPct', i.contingencyPct, 'Contingency percent')}${out('contingency')}</div>
     <div class="bu-note">${check('input.drawingsConfirmed', !!i.drawingsConfirmed, 'Drawings &amp; spec confirmed (12% → 8%)')}</div>
     <div class="bu"><span>Overhead &amp; profit on direct works</span>${pctInput('input.markupPct', i.markupPct, 'Markup percent')}${out('markup')}</div>
-    <div class="bu"><span>Subcontract packages + mgmt fee</span>${pctInput('input.subcontractFeePct', i.subcontractFeePct, 'Management fee percent')}${out('subcontract')}</div>
+    <div class="bu"><span>Subbed: roof, electrics, plumbing</span>${out('subcontractBase')}</div>
+    <div class="bu"><span>Subcontract markup</span>${pctInput('input.subcontractFeePct', i.subcontractFeePct, 'Subcontract markup percent')}${out('mgmtFee')}</div>
+    <div class="bu"><span>Plant, waste &amp; fees (at cost)</span>${out('atCost')}</div>
     <div class="bu strong"><span>Net price (ex VAT)</span>${out('net')}</div>
     <div class="bu"><span>VAT</span>${out('vat')}</div>
   </div>
@@ -290,7 +304,7 @@ function view(s: State) {
       <dt>Total cost base (excl. contingency &amp; markup)</dt><dd>${out('m.costBase')}</dd>
       <dt>Contingency</dt><dd>${out('contingency2')}</dd>
       <dt>Overhead &amp; profit</dt><dd>${out('markup2')}</dd>
-      <dt>Subcontract mgmt fee</dt><dd>${out('m.mgmtFee')}</dd>
+      <dt>Subcontract markup</dt><dd>${out('m.mgmtFee')}</dd>
       <dt>Gross margin (excl. contingency)</dt><dd>${out('m.margin')}</dd>
       <dt>Gross margin (incl. contingency)</dt><dd>${out('m.marginInc')}</dd>
     </dl>
@@ -326,7 +340,10 @@ function outputs(r: DetailedResult, s: State): Record<string, string> {
     contingency2: gbp.format(r.contingency),
     markup: gbp.format(r.markup),
     markup2: gbp.format(r.markup),
-    subcontract: gbp.format(r.subcontract),
+    footingsInHouse: gbp.format(r.footingsInHouse),
+    subcontractBase: gbp.format(r.subcontractBase),
+    mgmtFee: gbp.format(r.margin.mgmtFee),
+    atCost: gbp.format(r.atCost),
     net: gbp.format(r.net),
     vat: gbp.format(r.vat),
     total: gbp2.format(r.total),

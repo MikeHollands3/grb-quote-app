@@ -27,7 +27,13 @@ Improvements". Keep the light/dark token system in `src/styles.css`. Drop the re
   supply items (kitchens, sanitaryware, premium doors, bi-folds). This matters for the phase-2
   detailed estimator; misapplying it inflates estimates. The quick-quote benchmarks already embed it.
 - Contingency: 12% pre-drawings, 8% once drawings + spec confirmed.
-- Markup: 20% on direct works only.
+- Markup: 20% overhead & profit on direct works (+ contingency).
+- Package treatment (GRB practice, deliberately differs from the workbook, which marks up all of section 3):
+  footings are **in-house** (part of direct works, so they carry contingency + O&P); roof, electrics and
+  plumbing are **subcontracted** (base + 20% subcontract markup); plant hire, waste/skips and other fees
+  pass through **at cost**.
+- Regional uplift (South London, ×1.30) × inflation is applied to all rate-library rates, as in the workbook;
+  plant hire and waste are actual prices and are not uplifted.
 - All rates live in `src/data/rates.json`. The full 118-line rate library (labour/materials/waste)
   lives in the Excel master in Google Drive — export it to JSON for the detailed estimator; don't
   hand-key it.
