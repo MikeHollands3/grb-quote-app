@@ -35,6 +35,9 @@ Rates taken from GRB's own invoices are "local actuals" and skip the region/infl
 - `src/lib/detailed.ts` — detailed-estimate engine; mirrors the workbook's Detailed Estimate tab and its feeder tabs, tests reconcile to the workbook's own example job
 - `src/detailed-ui.ts` — detailed-estimate screen (draft autosaves to this device)
 - `src/data/detailed-example.json` — the workbook's example job (30 Clowders Road)
+- `src/lib/quote-pdf.ts` — branded client quotation PDF (matches GRB's existing quote layout); `src/lib/schedule.ts` — deposit + weekly payment schedule
+- `src/data/company.json` — company, contact and bank details printed on quotes; `src/data/quote-example.json` — default letter, scope and notes
+- `src/assets/grb-logo.png` — logo used on the PDF
 - `src/lib/types.ts` — shared types
 - `src/data/rates.json` — rate data
 - `src/main.ts` — DOM wiring

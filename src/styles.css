@@ -157,3 +157,9 @@ details.margin{margin-top:.8rem}
 .tag-subbed{background:color-mix(in srgb,#c98a1b 18%,transparent);color:color-mix(in srgb,#c98a1b 70%,var(--fg))}
 .tag-at-cost{background:var(--surface-2);color:var(--muted);border:1px solid var(--border)}
 h3 .tag{margin-left:.4rem;vertical-align:1px}
+textarea{font-family:var(--font-body);font-size:.92rem;color:var(--fg);background:var(--surface-2);border:1.5px solid var(--border);border-radius:.6rem;padding:.6rem .7rem;width:100%;resize:vertical;line-height:1.4}
+textarea:focus-visible{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px color-mix(in srgb,var(--focus) 30%,transparent)}
+input[type=date]{min-height:2.9rem}
+button.primary{font:700 .95rem var(--font-display);color:#fff;background:var(--accent);border:0;border-radius:.7rem;padding:.9rem;cursor:pointer}
+button.primary:disabled{opacity:.6;cursor:progress}
+.quote .row{align-items:flex-end}

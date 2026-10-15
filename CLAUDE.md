@@ -45,7 +45,7 @@ Improvements". Keep the light/dark token system in `src/styles.css`. Drop the re
 2. **Detailed estimator (done — mirrors the workbook's Detailed Estimate tab)** — line items from the full rate library (labour days + material quantities),
    groundworks/roof/electrical/plumbing/plant/waste sections, -> net, contingency, markup, VAT.
    Mirror the Excel tabs. Keep the engine pure + tested.
-3. **Branded PDF quote** — client-side (e.g. pdf-lib / jsPDF), GRB letterhead, payment schedule,
+3. **Branded PDF quote (done — `src/lib/quote-pdf.ts`, pdf-lib, lazy-loaded and precached for offline)** — client-side (e.g. pdf-lib / jsPDF), GRB letterhead, payment schedule,
    bank details, matching the existing ReportLab quotation layout.
 4. **Saved quotes** — IndexedDB, per-device; export/import JSON. Add a sync backend only if the team
    needs shared access.

@@ -1,8 +1,13 @@
 import libData from './data/rate-library.json'
 import ratesData from './data/rates.json'
 import exampleData from './data/detailed-example.json'
+import quoteExample from './data/quote-example.json'
+import companyData from './data/company.json'
+import logoUrl from './assets/grb-logo.png'
+import type { QuoteDoc, Company } from './lib/quote-pdf'
 import { computeDetailed, CONTINGENCY, PERMIT_ITEM, type DetailedInput, type DetailedResult } from './lib/detailed'
 import { gbp, uplift } from './lib/pricing'
+import { paymentSchedule } from './lib/schedule'
 import type { RateLibrary, Rates } from './lib/types'
 
 const lib = libData as unknown as RateLibrary
@@ -12,7 +17,11 @@ const STORE = 'grb.detailed.v1'
 interface State {
   region: string
   input: DetailedInput
+  quote: QuoteDoc
 }
+
+const today = () => new Date().toISOString().slice(0, 10)
+const newQuote = (): QuoteDoc => ({ ...(structuredClone(quoteExample) as QuoteDoc), date: today() })
 
 const gbp2 = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', minimumFractionDigits: 2 })
 const pct = (v: number) => `${Math.round(v * 1000) / 10}%`
@@ -20,7 +29,7 @@ const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
 
 function exampleState(): State {
-  return { region: 'London / South-East (+30%)', input: structuredClone(exampleData) as DetailedInput }
+  return { region: 'London / South-East (+30%)', input: structuredClone(exampleData) as DetailedInput, quote: newQuote() }
 }
 
 function blankState(): State {
@@ -38,6 +47,7 @@ function blankState(): State {
   i.plant.lines = []
   i.plant.delivery = 0
   i.fees = i.fees.map((f) => ({ ...f, amount: 0 }))
+  s.quote = { ...s.quote, ref: '', clientName: '', clientAddress: '', salutation: '', drawings: '' }
   return s
 }
 
@@ -50,6 +60,7 @@ function load(): State {
         // Drafts saved before these settings existed.
         s.input.sundries ??= 0
         s.input.subContingencyPct ??= 0.05
+        s.quote ??= newQuote()
         return s
       }
     }
@@ -90,6 +101,9 @@ function num(path: string, value: number, attrs = '') {
 }
 function pctInput(path: string, value: number, label: string) {
   return `<div class="pct"><input type="number" inputmode="decimal" step="any" data-path="${path}" data-type="pct" value="${Math.round(value * 1000) / 10}" aria-label="${label}"><span>%</span></div>`
+}
+function area(path: string, value: string, rows: number, attrs = '') {
+  return `<textarea data-path="${path}" data-type="text" rows="${rows}" ${attrs}>${esc(value)}</textarea>`
 }
 function text(path: string, value: string, attrs = '') {
   return `<input type="text" data-path="${path}" data-type="text" value="${esc(value)}" ${attrs}>`
@@ -319,6 +333,28 @@ function view(s: State) {
     <p class="hint">Contingency is a risk allowance, not guaranteed profit — unspent, it becomes extra margin.</p>
   </details>
 
+  <h2>5. Client quote</h2>
+  <div class="card quote">
+    <div class="row">
+      ${field('Quote ref', text('quote.ref', s.quote.ref, 'placeholder="e.g. CR30/1"'))}
+      ${field('Date', `<input type="date" data-path="quote.date" data-type="text" value="${esc(s.quote.date)}">`)}
+    </div>
+    <div class="row">
+      ${field('Duration (weeks)', num('quote.durationWeeks', s.quote.durationWeeks, 'min="0" step="1"'))}
+      ${field('Deposit', pctInput('quote.depositPct', s.quote.depositPct, 'Deposit percent'))}
+    </div>
+    ${field('Drawings ref (optional)', text('quote.drawings', s.quote.drawings, 'placeholder="e.g. BR1 & BR2 (May 2026)"'))}
+    ${field('Client name', text('quote.clientName', s.quote.clientName))}
+    ${field('Client address', area('quote.clientAddress', s.quote.clientAddress, 3))}
+    ${field('Salutation', text('quote.salutation', s.quote.salutation, 'placeholder="Dear Mr & Mrs …,"'))}
+    ${field('Letter', area('quote.letter', s.quote.letter, 8), 'Blank line between paragraphs')}
+    ${field('Scope of works', area('quote.scope', s.quote.scope, 10), 'One bullet per line')}
+    ${field('Notes &amp; qualifications', area('quote.notes', s.quote.notes, 4), 'One bullet per line')}
+    <dl class="calc"><dt>Deposit</dt><dd>${out('q.deposit')}</dd><dt>Weekly payment</dt><dd>${out('q.weekly')}</dd></dl>
+    <button type="button" class="primary" data-action="pdf">Create PDF quote</button>
+    <p class="hint" data-out="q.status"></p>
+  </div>
+
   <div class="actions">
     <button type="button" class="ghost" data-action="example">Load example job</button>
     <button type="button" class="ghost" data-action="clear">Start blank</button>
@@ -383,6 +419,9 @@ function outputs(r: DetailedResult, s: State): Record<string, string> {
     const idx = s.input.waste.lines.findIndex((l) => l.item === PERMIT_ITEM)
     if (idx >= 0) o[`input.waste.lines.${idx}.cost`] = 'n/a'
   }
+  const sched = paymentSchedule(r.total, s.quote.depositPct, s.quote.durationWeeks)
+  o['q.deposit'] = gbp2.format(sched[0]?.amount ?? 0)
+  o['q.weekly'] = s.quote.durationWeeks >= 1 ? `${gbp2.format(sched[1]?.amount ?? 0)} × ${Math.floor(s.quote.durationWeeks)}` : 'Balance on completion'
   let k = 0
   s.input.plant.lines.forEach((l, idx) => (o[`plant.${idx}.cost`] = l.item ? gbp.format(r.plant.lines[k++].cost) : '—'))
   return o
@@ -419,7 +458,7 @@ export function mountDetailed(root: HTMLElement) {
     const el = e.target as HTMLInputElement | HTMLSelectElement
     const path = el.dataset.path
     if (!path) return
-    const full = path.startsWith('input.') || path === 'region' ? path : `input.${path}`
+    const full = path.startsWith('input.') || path.startsWith('quote.') || path === 'region' ? path : `input.${path}`
     let value: unknown
     switch (el.dataset.type) {
       case 'num':
@@ -464,6 +503,9 @@ export function mountDetailed(root: HTMLElement) {
       ;(getAt(i, parts.join('.')) as unknown[]).splice(idx, 1)
     } else if (btn.dataset.action === 'example') {
       state = exampleState()
+    } else if (btn.dataset.action === 'pdf') {
+      void createPdf(btn)
+      return
     } else if (btn.dataset.action === 'clear') {
       if (!confirm('Clear this estimate and start blank?')) return
       state = blankState()
@@ -471,6 +513,38 @@ export function mountDetailed(root: HTMLElement) {
     save(state)
     render()
   })
+
+  const createPdf = async (btn: HTMLButtonElement) => {
+    const status = root.querySelector<HTMLElement>('[data-out="q.status"]')!
+    const r = computeDetailed(state.input, lib, { uplift: uplift(rates, state.region), vatRegistered: true, vat: rates.vat })
+    if (!(r.total > 0)) {
+      status.textContent = 'Add some items to the estimate first.'
+      return
+    }
+    btn.disabled = true
+    status.textContent = 'Creating PDF…'
+    try {
+      const [{ buildQuotePdf }, logo] = await Promise.all([
+        import('./lib/quote-pdf'),
+        fetch(logoUrl).then((res) => res.arrayBuffer()),
+      ])
+      const bytes = await buildQuotePdf(state.quote, r, companyData as Company, new Uint8Array(logo))
+      const name = `GRB Quotation ${state.quote.ref || 'draft'} - ${state.quote.clientAddress.split('\n')[0] || 'client'}.pdf`.replace(/[\\/:*?"<>|]/g, '-')
+      const url = URL.createObjectURL(new Blob([bytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' }))
+      const a = document.createElement('a')
+      a.href = url
+      a.download = name
+      document.body.append(a)
+      a.click()
+      a.remove()
+      setTimeout(() => URL.revokeObjectURL(url), 60_000)
+      status.textContent = `Saved ${name}`
+    } catch (err) {
+      status.textContent = `Couldn't create the PDF: ${(err as Error).message}`
+    } finally {
+      btn.disabled = false
+    }
+  }
 
   render()
 }
