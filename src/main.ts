@@ -13,6 +13,7 @@ import { jobFromQuote } from './job-from-quote'
 import { jobsChanged, listJobs, onJobsChanged, putJob } from './lib/jobs-store'
 import { getQuote } from './lib/saved'
 import type { SavedQuote } from './lib/saved'
+import { HELP_HTML } from './help'
 
 const rates = ratesData as unknown as Rates
 
@@ -37,6 +38,7 @@ app.innerHTML = `
         <b>GRB</b>
         <span>Building &amp; Home Improvements</span>
       </div>
+      <button type="button" class="help-btn" data-help aria-pressed="false" aria-label="How to use the app">?</button>
     </header>
     <nav class="tabs bottom-nav" role="tablist" aria-label="Sections">
       <button type="button" role="tab" data-tab="quick" aria-selected="true">${icon('bolt')}<span>Quick</span></button>
@@ -100,6 +102,8 @@ app.innerHTML = `
     <section id="jobs" hidden></section>
 
     <section id="money" hidden></section>
+
+    <section id="help" hidden>${HELP_HTML}</section>
 
     <footer>GRB Builders (London) Ltd · rates reviewed Oct 2026</footer>
   </div>
@@ -288,11 +292,15 @@ function showTab(tab: string) {
     b.setAttribute('aria-selected', String(on))
     document.getElementById(b.dataset.tab!)!.hidden = !on
   }
+  document.getElementById('help')!.hidden = tab !== 'help'
+  document.querySelector('[data-help]')!.setAttribute('aria-pressed', String(tab === 'help'))
+  if (tab === 'help') window.scrollTo(0, 0)
   if (tab === 'saved') void loadJobIndex().then(saved.refresh)
   if (tab === 'jobs') void jobsUi.refresh()
   if (tab === 'money') money.show()
   try {
     localStorage.setItem(TAB, tab)
+    if (tab !== 'help') localStorage.setItem('grb.lastTab', tab)
   } catch {
     /* ignore */
   }
@@ -301,10 +309,20 @@ document.querySelector('.bottom-nav')!.addEventListener('click', (e) => {
   const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-tab]')
   if (b) showTab(b.dataset.tab!)
 })
+document.querySelector('[data-help]')!.addEventListener('click', () => {
+  let back = 'quick'
+  try {
+    back = localStorage.getItem('grb.lastTab') ?? 'quick'
+  } catch {
+    /* ignore */
+  }
+  showTab(document.getElementById('help')!.hidden ? 'help' : back)
+})
 let initialTab = 'quick'
 try {
   const t = localStorage.getItem(TAB)
-  initialTab = t && ['detailed', 'saved', 'jobs', 'money'].includes(t) ? t : 'quick'
+  // First visit on this device: open the guide.
+  initialTab = t === null ? 'help' : ['detailed', 'saved', 'jobs', 'money', 'help'].includes(t) ? t : 'quick'
 } catch {
   /* ignore */
 }
