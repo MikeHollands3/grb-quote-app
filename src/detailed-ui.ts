@@ -2,9 +2,9 @@ import libData from './data/rate-library.json'
 import ratesData from './data/rates.json'
 import exampleData from './data/detailed-example.json'
 import quoteExample from './data/quote-example.json'
-import companyData from './data/company.json'
-import logoUrl from './assets/grb-logo.png'
-import type { QuoteDoc, Company } from './lib/quote-pdf'
+import type { QuoteDoc } from './lib/quote-pdf'
+import { downloadBlob, priceOf, quotePdf, type EstimateState } from './quote-files'
+import { getQuote, newId, putQuote, type SavedQuote } from './lib/saved'
 import { computeDetailed, CONTINGENCY, PERMIT_ITEM, type DetailedInput, type DetailedResult } from './lib/detailed'
 import { gbp, uplift } from './lib/pricing'
 import { paymentSchedule } from './lib/schedule'
@@ -14,11 +14,7 @@ const lib = libData as unknown as RateLibrary
 const rates = ratesData as unknown as Rates
 const STORE = 'grb.detailed.v1'
 
-interface State {
-  region: string
-  input: DetailedInput
-  quote: QuoteDoc
-}
+type State = EstimateState
 
 const today = () => new Date().toISOString().slice(0, 10)
 const newQuote = (): QuoteDoc => ({ ...(structuredClone(quoteExample) as QuoteDoc), date: today() })
@@ -51,16 +47,20 @@ function blankState(): State {
   return s
 }
 
+/** Fill in settings added since a draft or saved quote was made. */
+function migrate(s: State) {
+  s.input.sundries ??= 0
+  s.input.subContingencyPct ??= 0.05
+  s.quote ??= newQuote()
+}
+
 function load(): State {
   try {
     const raw = localStorage.getItem(STORE)
     if (raw) {
       const s = JSON.parse(raw) as State
       if (s?.input?.labour && s.input.footings && rates.regions[s.region] !== undefined) {
-        // Drafts saved before these settings existed.
-        s.input.sundries ??= 0
-        s.input.subContingencyPct ??= 0.05
-        s.quote ??= newQuote()
+        migrate(s)
         return s
       }
     }
@@ -174,6 +174,10 @@ function view(s: State) {
   const i = s.input
   const plantNames = lib.plantHire.map((p) => p.item)
   return `
+  <div class="savebar">
+    <span class="save-status" data-out="saveStatus"></span>
+    <button type="button" class="ghost small" data-action="save">Save quote</button>
+  </div>
   <h1>Detailed estimate</h1>
   <p class="lede">Build a priced quote from labour days, materials and subcontract packages. Rates come from the rate library with the region and ${Math.round(rates.inflation * 100)}% inflation uplift. Footings are priced as in-house work, roof, electrics and plumbing as subcontracted, and plant, skips and fees at cost.</p>
 
@@ -427,8 +431,58 @@ function outputs(r: DetailedResult, s: State): Record<string, string> {
   return o
 }
 
-export function mountDetailed(root: HTMLElement) {
+export interface DetailedOptions {
+  /** Called after a quote is saved on this device (e.g. to queue a Drive upload). */
+  onSaved?: (q: SavedQuote) => void
+}
+
+export function mountDetailed(root: HTMLElement, opts: DetailedOptions = {}) {
   let state = load()
+  // Snapshot of the last saved version, to show "unsaved changes".
+  let savedSnapshot: string | null = null
+  let savedAt: string | null = null
+  if (state.id) {
+    void getQuote(state.id).then((q) => {
+      if (q) {
+        savedSnapshot = JSON.stringify(q.data)
+        savedAt = q.updatedAt
+      } else delete state.id
+      update()
+    }).catch(() => undefined)
+  }
+
+  const saveStatus = () => {
+    if (!state.id || !savedSnapshot) return 'Not saved yet'
+    if (JSON.stringify(state) !== savedSnapshot) return 'Unsaved changes'
+    const t = savedAt ? new Date(savedAt) : null
+    return t ? `Saved ${t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} ${t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}` : 'Saved'
+  }
+
+  const saveQuote = async (): Promise<SavedQuote> => {
+    const id = state.id ?? newId()
+    state.id = id
+    const prev = await getQuote(id).catch(() => undefined)
+    const now = new Date().toISOString()
+    const data = structuredClone(state)
+    const rec: SavedQuote = {
+      id,
+      ref: state.quote.ref,
+      client: state.quote.clientName,
+      address: state.quote.clientAddress.split('\n')[0] ?? '',
+      total: priceOf(state).total,
+      createdAt: prev?.createdAt ?? now,
+      updatedAt: now,
+      data,
+      drive: prev?.drive ? { ...prev.drive, status: 'pending', error: undefined } : { status: 'pending' },
+    }
+    await putQuote(rec)
+    savedSnapshot = JSON.stringify(data)
+    savedAt = now
+    save(state)
+    update()
+    opts.onSaved?.(rec)
+    return rec
+  }
 
   const update = () => {
     const r = computeDetailed(state.input, lib, {
@@ -437,12 +491,14 @@ export function mountDetailed(root: HTMLElement) {
       vat: rates.vat,
     })
     const o = outputs(r, state)
+    o.saveStatus = saveStatus()
     root.querySelectorAll<HTMLElement>('[data-out]').forEach((el) => {
       el.textContent = o[el.dataset.out!] ?? ''
     })
     root.querySelectorAll<HTMLDetailsElement>('[data-pkg]').forEach((d) => {
       d.classList.toggle('off', !(state.input as any)[d.dataset.pkg!].include)
     })
+    root.querySelector('.savebar')?.classList.toggle('dirty', o.saveStatus !== 'Saved' && !o.saveStatus.startsWith('Saved '))
   }
 
   const render = () => {
@@ -501,14 +557,22 @@ export function mountDetailed(root: HTMLElement) {
       const parts = btn.dataset.remove.split('.')
       const idx = Number(parts.pop())
       ;(getAt(i, parts.join('.')) as unknown[]).splice(idx, 1)
+    } else if (btn.dataset.action === 'save') {
+      btn.disabled = true
+      void saveQuote()
+        .catch((err) => alert(`Couldn't save: ${(err as Error).message}`))
+        .finally(() => (btn.disabled = false))
+      return
     } else if (btn.dataset.action === 'example') {
       state = exampleState()
+      savedSnapshot = null
     } else if (btn.dataset.action === 'pdf') {
       void createPdf(btn)
       return
     } else if (btn.dataset.action === 'clear') {
       if (!confirm('Clear this estimate and start blank?')) return
       state = blankState()
+      savedSnapshot = null
     } else return
     save(state)
     render()
@@ -516,28 +580,16 @@ export function mountDetailed(root: HTMLElement) {
 
   const createPdf = async (btn: HTMLButtonElement) => {
     const status = root.querySelector<HTMLElement>('[data-out="q.status"]')!
-    const r = computeDetailed(state.input, lib, { uplift: uplift(rates, state.region), vatRegistered: true, vat: rates.vat })
-    if (!(r.total > 0)) {
+    if (!(priceOf(state).total > 0)) {
       status.textContent = 'Add some items to the estimate first.'
       return
     }
     btn.disabled = true
     status.textContent = 'Creating PDF…'
     try {
-      const [{ buildQuotePdf }, logo] = await Promise.all([
-        import('./lib/quote-pdf'),
-        fetch(logoUrl).then((res) => res.arrayBuffer()),
-      ])
-      const bytes = await buildQuotePdf(state.quote, r, companyData as Company, new Uint8Array(logo))
-      const name = `GRB Quotation ${state.quote.ref || 'draft'} - ${state.quote.clientAddress.split('\n')[0] || 'client'}.pdf`.replace(/[\\/:*?"<>|]/g, '-')
-      const url = URL.createObjectURL(new Blob([bytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' }))
-      const a = document.createElement('a')
-      a.href = url
-      a.download = name
-      document.body.append(a)
-      a.click()
-      a.remove()
-      setTimeout(() => URL.revokeObjectURL(url), 60_000)
+      await saveQuote()
+      const { bytes, name } = await quotePdf(state)
+      downloadBlob(new Blob([bytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' }), name)
       status.textContent = `Saved ${name}`
     } catch (err) {
       status.textContent = `Couldn't create the PDF: ${(err as Error).message}`
@@ -547,4 +599,28 @@ export function mountDetailed(root: HTMLElement) {
   }
 
   render()
+
+  return {
+    /** Open a saved quote in the estimate screen. */
+    open(q: SavedQuote) {
+      state = structuredClone(q.data) as State
+      state.id = q.id
+      migrate(state)
+      savedSnapshot = JSON.stringify(q.data)
+      savedAt = q.updatedAt
+      save(state)
+      render()
+    },
+    /** Called when the open quote is deleted elsewhere. */
+    forget(id: string) {
+      if (state.id === id) {
+        delete state.id
+        savedSnapshot = null
+        save(state)
+        update()
+      }
+    },
+    currentId: () => state.id,
+  }
 }
+

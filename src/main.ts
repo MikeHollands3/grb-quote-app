@@ -3,6 +3,7 @@ import ratesData from './data/rates.json'
 import { computeQuote, gbp } from './lib/pricing'
 import type { Rates, Spec } from './lib/types'
 import { mountDetailed } from './detailed-ui'
+import { mountSaved } from './saved-ui'
 
 const rates = ratesData as unknown as Rates
 
@@ -20,6 +21,7 @@ app.innerHTML = `
       <nav class="tabs" role="tablist">
         <button type="button" role="tab" data-tab="quick" aria-selected="true">Quick</button>
         <button type="button" role="tab" data-tab="detailed" aria-selected="false">Detailed</button>
+        <button type="button" role="tab" data-tab="saved" aria-selected="false">Saved</button>
       </nav>
     </header>
 
@@ -72,6 +74,8 @@ app.innerHTML = `
 
     <section id="detailed" hidden></section>
 
+    <section id="saved" hidden></section>
+
     <footer>GRB Builders (London) Ltd · rates reviewed Oct 2026</footer>
   </div>
 `
@@ -111,7 +115,16 @@ for (const id of ['job', 'spec', 'area', 'region', 'roof']) {
 }
 calc()
 
-mountDetailed(document.getElementById('detailed')!)
+const detailed = mountDetailed(document.getElementById('detailed')!)
+const saved = mountSaved(document.getElementById('saved')!, {
+  onOpen: (q) => {
+    detailed.open(q)
+    showTab('detailed')
+    window.scrollTo(0, 0)
+  },
+  onDeleted: (id) => detailed.forget(id),
+  currentId: () => detailed.currentId(),
+})
 
 const TAB = 'grb.tab'
 function showTab(tab: string) {
@@ -120,6 +133,7 @@ function showTab(tab: string) {
     b.setAttribute('aria-selected', String(on))
     document.getElementById(b.dataset.tab!)!.hidden = !on
   }
+  if (tab === 'saved') void saved.refresh()
   try {
     localStorage.setItem(TAB, tab)
   } catch {
@@ -132,7 +146,8 @@ document.querySelector('.tabs')!.addEventListener('click', (e) => {
 })
 let initialTab = 'quick'
 try {
-  initialTab = localStorage.getItem(TAB) === 'detailed' ? 'detailed' : 'quick'
+  const t = localStorage.getItem(TAB)
+  initialTab = t === 'detailed' || t === 'saved' ? t : 'quick'
 } catch {
   /* ignore */
 }

@@ -47,7 +47,7 @@ Improvements". Keep the light/dark token system in `src/styles.css`. Drop the re
    Mirror the Excel tabs. Keep the engine pure + tested.
 3. **Branded PDF quote (done — `src/lib/quote-pdf.ts`, pdf-lib, lazy-loaded and precached for offline)** — client-side (e.g. pdf-lib / jsPDF), GRB letterhead, payment schedule,
    bank details, matching the existing ReportLab quotation layout.
-4. **Saved quotes** — IndexedDB, per-device; export/import JSON. Add a sync backend only if the team
+4. **Saved quotes (local part done — `src/lib/saved.ts`, Saved tab)** — IndexedDB, per-device; export/import JSON. Add a sync backend only if the team
    needs shared access.
 5. **Deploy** — static host (Cloudflare Pages / Vercel), HTTPS, custom subdomain.
 
