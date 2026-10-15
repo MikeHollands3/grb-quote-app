@@ -5,9 +5,24 @@ import type { Rates, Spec } from './lib/types'
 import { mountDetailed } from './detailed-ui'
 import { mountSaved } from './saved-ui'
 import { createDriveSync, HOSTED_DOMAIN } from './drive-sync'
+import { mountJobs } from './jobs-ui'
+import { mountMoney } from './money-ui'
+import { jobFromQuote } from './job-from-quote'
+import { jobsChanged, listJobs, onJobsChanged, putJob } from './lib/jobs-store'
+import { getQuote } from './lib/saved'
 import type { SavedQuote } from './lib/saved'
 
 const rates = ratesData as unknown as Rates
+
+const ICONS: Record<string, string> = {
+  bolt: '<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/>',
+  calc: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 6h8M8 11h2M14 11h2M8 15h2M14 15h2M8 19h2M14 19h2"/>',
+  doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/>',
+  cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  pound: '<path d="M17 6.5A4.5 4.5 0 0 0 8.5 8.5V20M6 13h8M6 20h12"/>',
+}
+const icon = (k: string) =>
+  `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k]}</svg>`
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 app.innerHTML = `
@@ -20,12 +35,14 @@ app.innerHTML = `
         <b>GRB</b>
         <span>Building &amp; Home Improvements</span>
       </div>
-      <nav class="tabs" role="tablist">
-        <button type="button" role="tab" data-tab="quick" aria-selected="true">Quick</button>
-        <button type="button" role="tab" data-tab="detailed" aria-selected="false">Detailed</button>
-        <button type="button" role="tab" data-tab="saved" aria-selected="false">Saved</button>
-      </nav>
     </header>
+    <nav class="tabs bottom-nav" role="tablist" aria-label="Sections">
+      <button type="button" role="tab" data-tab="quick" aria-selected="true">${icon('bolt')}<span>Quick</span></button>
+      <button type="button" role="tab" data-tab="detailed" aria-selected="false">${icon('calc')}<span>Estimate</span></button>
+      <button type="button" role="tab" data-tab="saved" aria-selected="false">${icon('doc')}<span>Quotes</span></button>
+      <button type="button" role="tab" data-tab="jobs" aria-selected="false">${icon('cal')}<span>Jobs</span></button>
+      <button type="button" role="tab" data-tab="money" aria-selected="false">${icon('pound')}<span>Money</span></button>
+    </nav>
 
     <section id="quick">
     <h1>On-site ballpark estimator</h1>
@@ -77,6 +94,10 @@ app.innerHTML = `
     <section id="detailed" hidden></section>
 
     <section id="saved" hidden></section>
+
+    <section id="jobs" hidden></section>
+
+    <section id="money" hidden></section>
 
     <footer>GRB Builders (London) Ltd · rates reviewed Oct 2026</footer>
   </div>
@@ -158,9 +179,19 @@ const detailed = mountDetailed(document.getElementById('detailed')!, {
   beforeSave: () => drive.beforeSave(),
   onSaved: () => drive.afterSave(),
 })
+// quoteId -> jobId, for the Won / View job buttons on the Quotes tab
+let jobByQuote = new Map<string, string>()
+const loadJobIndex = async () => {
+  jobByQuote = new Map((await listJobs()).map((j) => [j.quoteId, j.id]))
+}
+
 const saved = mountSaved(document.getElementById('saved')!, {
   header: driveCard,
   badge: driveBadge,
+  actions: (q) =>
+    jobByQuote.has(q.id)
+      ? `<button type="button" class="ghost small" data-view-job="${jobByQuote.get(q.id)}">View job</button>`
+      : `<button type="button" class="ghost small won" data-won="${q.id}">Won → job</button>`,
   onOpen: (q) => {
     detailed.open(q)
     showTab('detailed')
@@ -168,6 +199,42 @@ const saved = mountSaved(document.getElementById('saved')!, {
   },
   onDeleted: (id) => detailed.forget(id),
   currentId: () => detailed.currentId(),
+})
+
+const jobsUi = mountJobs(document.getElementById('jobs')!, {
+  onOpenQuote: async (quoteId) => {
+    const q = await getQuote(quoteId)
+    if (!q) return alert('That quote is no longer saved on this device.')
+    detailed.open(q)
+    showTab('detailed')
+    window.scrollTo(0, 0)
+  },
+})
+const money = mountMoney(document.getElementById('money')!, {
+  onOpenJob: (id) => {
+    showTab('jobs')
+    void jobsUi.show(id)
+    window.scrollTo(0, 0)
+  },
+})
+onJobsChanged(() => void loadJobIndex())
+
+document.getElementById('saved')!.addEventListener('click', async (e) => {
+  const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-won],[data-view-job]')
+  if (!b) return
+  let jobId = b.dataset.viewJob
+  if (b.dataset.won) {
+    const q = await getQuote(b.dataset.won)
+    if (!q) return
+    if (!(q.total > 0)) return alert('This quote has no price yet.')
+    const job = jobFromQuote(q)
+    await putJob(job)
+    jobsChanged()
+    jobId = job.id
+  }
+  showTab('jobs')
+  await jobsUi.show(jobId!)
+  window.scrollTo(0, 0)
 })
 
 drive.subscribe(() => {
@@ -188,21 +255,23 @@ function showTab(tab: string) {
     b.setAttribute('aria-selected', String(on))
     document.getElementById(b.dataset.tab!)!.hidden = !on
   }
-  if (tab === 'saved') void saved.refresh()
+  if (tab === 'saved') void loadJobIndex().then(saved.refresh)
+  if (tab === 'jobs') void jobsUi.refresh()
+  if (tab === 'money') void money.refresh()
   try {
     localStorage.setItem(TAB, tab)
   } catch {
     /* ignore */
   }
 }
-document.querySelector('.tabs')!.addEventListener('click', (e) => {
+document.querySelector('.bottom-nav')!.addEventListener('click', (e) => {
   const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-tab]')
   if (b) showTab(b.dataset.tab!)
 })
 let initialTab = 'quick'
 try {
   const t = localStorage.getItem(TAB)
-  initialTab = t === 'detailed' || t === 'saved' ? t : 'quick'
+  initialTab = t && ['detailed', 'saved', 'jobs', 'money'].includes(t) ? t : 'quick'
 } catch {
   /* ignore */
 }

@@ -33,20 +33,25 @@ export interface ExportFile {
 }
 
 const DB = 'grb-quotes'
-const STORE = 'quotes'
+const STORE: StoreName = 'quotes'
 
 export const newId = () =>
   typeof crypto !== 'undefined' && 'randomUUID' in crypto
     ? crypto.randomUUID()
     : `q-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
 
+export type StoreName = 'quotes' | 'jobs' | 'people'
+
 let dbPromise: Promise<IDBDatabase> | undefined
 function db(): Promise<IDBDatabase> {
   dbPromise ??= new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB, 1)
+    // v1: quotes. v2: jobs + people (existing quotes are kept).
+    const req = indexedDB.open(DB, 2)
     req.onupgradeneeded = () => {
-      const store = req.result.createObjectStore(STORE, { keyPath: 'id' })
-      store.createIndex('updatedAt', 'updatedAt')
+      const d = req.result
+      if (!d.objectStoreNames.contains('quotes')) d.createObjectStore('quotes', { keyPath: 'id' }).createIndex('updatedAt', 'updatedAt')
+      if (!d.objectStoreNames.contains('jobs')) d.createObjectStore('jobs', { keyPath: 'id' })
+      if (!d.objectStoreNames.contains('people')) d.createObjectStore('people', { keyPath: 'id' })
     }
     req.onsuccess = () => resolve(req.result)
     req.onerror = () => {
@@ -57,11 +62,15 @@ function db(): Promise<IDBDatabase> {
   return dbPromise
 }
 
-async function tx<T>(mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRequest<T>): Promise<T> {
+export async function tx<T>(
+  mode: IDBTransactionMode,
+  fn: (s: IDBObjectStore) => IDBRequest<T>,
+  store: StoreName = STORE,
+): Promise<T> {
   const d = await db()
   return new Promise((resolve, reject) => {
-    const t = d.transaction(STORE, mode)
-    const req = fn(t.objectStore(STORE))
+    const t = d.transaction(store, mode)
+    const req = fn(t.objectStore(store))
     t.oncomplete = () => resolve(req.result)
     t.onerror = () => reject(t.error)
     t.onabort = () => reject(t.error)

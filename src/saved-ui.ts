@@ -13,6 +13,8 @@ export interface SavedOptions {
   currentId: () => string | undefined
   /** Optional extra status line per quote (e.g. Drive sync state). */
   badge?: (q: SavedQuote) => string
+  /** Optional extra action buttons per quote (e.g. Won → job). */
+  actions?: (q: SavedQuote) => string
   /** Optional header markup (e.g. Drive connect button). */
   header?: () => string
 }
@@ -33,6 +35,7 @@ export function mountSaved(root: HTMLElement, opts: SavedOptions) {
       </button>
       <span class="saved-total">${gbp2.format(q.total)}</span>
       <span class="saved-actions">
+        ${opts.actions?.(q) ?? ''}
         <button type="button" class="ghost small" data-copy="${q.id}">Duplicate</button>
         <button type="button" class="ghost small danger" data-delete="${q.id}">Delete</button>
       </span>
@@ -43,7 +46,7 @@ export function mountSaved(root: HTMLElement, opts: SavedOptions) {
     const f = filter.trim().toLowerCase()
     const shown = f ? quotes.filter((q) => `${q.ref} ${q.client} ${q.address}`.toLowerCase().includes(f)) : quotes
     root.innerHTML = `
-      <h1>Saved quotes</h1>
+      <h1>Quotes</h1>
       <p class="lede">Quotes are saved on this device and work offline. Export them to back up or move to another phone.</p>
       ${opts.header?.() ?? ''}
       <div class="card">

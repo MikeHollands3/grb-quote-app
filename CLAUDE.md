@@ -51,6 +51,13 @@ Improvements". Keep the light/dark token system in `src/styles.css`. Drop the re
    upload to a "GRB Quotes" Google Drive folder (`src/lib/drive.ts`, `src/drive-sync.ts`; browser-only Google
    sign-in, `drive.file` scope, GRB Workspace accounts only — setup in `docs/google-drive-setup.md`).
 5. **Deploy** — static host (Cloudflare Pages / Vercel), HTTPS, custom subdomain.
+6. **Jobs & money in (part 1 done)** — "Won → job" on a quote (`src/job-from-quote.ts`): start date, stage programme
+   with who (team + subbies by name, `src/lib/jobs.ts`), one invoice per payment (deposit on acceptance, weekly
+   invoices each programme Monday, due after `termsDays`). Jobs and Money tabs. Still to do: (2) a shared
+   "GRB Jobs" Google Calendar (app-created calendar only, one event per stage: who/what/where) and a
+   "GRB Jobs & Payments" Google Sheet; (3) direct Xero link — create each invoice in Xero when due and read paid
+   status back. Xero's API can't be called from the browser, so this needs a small server (e.g. a Cloudflare
+   Worker holding the Xero tokens); the user has approved that exception to "no backend".
 
 ## Commands
 `npm install` · `npm run dev` · `npm run test` · `npm run build` · `npm run preview`
