@@ -5,12 +5,17 @@ import type { Rates, QuoteInput, QuoteResult } from './types'
  * reused by the detailed estimator later.
  *
  * Range = benchmark £/m² (by job + spec) plus any roof £/m² adder,
- * times the regional multiplier, times floor area. VAT added last.
+ * times the region × inflation uplift, times floor area. VAT added last.
  */
+/** Region × inflation multiplier — the workbook's "Combined price multiplier". */
+export function uplift(rates: Rates, region: string): number {
+  return (rates.regions[region] ?? 1) * (1 + rates.inflation)
+}
+
 export function computeQuote(input: QuoteInput, rates: Rates): QuoteResult {
   const base = rates.benchmarks[input.job]?.[input.spec] ?? [0, 0]
   const roof = rates.roofs[input.roof] ?? [0, 0]
-  const mult = rates.regions[input.region] ?? 1
+  const mult = uplift(rates, input.region)
   const area = Number.isFinite(input.area) && input.area > 0 ? input.area : 0
 
   const exLow = (base[0] + roof[0]) * mult * area

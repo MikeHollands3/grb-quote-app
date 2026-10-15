@@ -60,7 +60,7 @@ app.innerHTML = `
     </div>
 
     <div class="notes">
-      <p><b>Indicative only — not a quotation.</b> Figures are £/m² benchmarks × floor area, with a regional uplift and 20% VAT. They scope a conversation; they don't replace a measured, drawings-based estimate.</p>
+      <p><b>Indicative only — not a quotation.</b> Figures are £/m² benchmarks × floor area, with a regional uplift, ${Math.round(rates.inflation * 100)}% inflation since the rates were last checked, and 20% VAT. They scope a conversation; they don't replace a measured, drawings-based estimate.</p>
       <p>Budget = straightforward spec and finishes · Standard = typical mid-range · Premium = high-end finishes, structural complexity, bespoke joinery.</p>
     </div>
 

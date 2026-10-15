@@ -2,6 +2,8 @@ export type Spec = 'Budget' | 'Standard' | 'Premium'
 
 export interface Rates {
   vat: number
+  /** Inflation since the rates were last checked; compounds with the regional multiplier. */
+  inflation: number
   benchmarks: Record<string, Record<Spec, [number, number]>>
   regions: Record<string, number>
   roofs: Record<string, [number, number]>
