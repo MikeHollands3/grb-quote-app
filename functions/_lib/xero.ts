@@ -48,18 +48,24 @@ interface Connection {
 
 // ---------- Google sign-in check ----------
 
-/** Returns the caller's email, or throws 401/403. */
+/**
+ * Returns the caller's email, or throws 401/403.
+ * The app's Google token has only drive.file + calendar.app.created scopes (no "email"), so
+ * tokeninfo proves which app it was issued to, and Drive's about.get (allowed by drive.file)
+ * says whose it is.
+ */
 export async function verifyGoogle(req: Request, env: Env, f: Fetch = fetch): Promise<string> {
   const token = req.headers.get('Authorization')?.replace(/^Bearer\s+/i, '')
   if (!token) throw new HttpError(401, 'Sign in with Google first.')
   const res = await f(`https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(token)}`)
   if (!res.ok) throw new HttpError(401, 'Google sign-in has expired — sign in again.')
-  const info = (await res.json()) as { aud?: string; azp?: string; email?: string; email_verified?: string | boolean }
+  const info = (await res.json()) as { aud?: string; azp?: string }
   const clientId = env.GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID
   if (info.aud !== clientId && info.azp !== clientId) throw new HttpError(403, 'That Google sign-in is not for this app.')
-  const email = (info.email ?? '').toLowerCase()
-  if (!email.endsWith(`@${HOSTED_DOMAIN}`) || String(info.email_verified) !== 'true')
-    throw new HttpError(403, `Only @${HOSTED_DOMAIN} accounts can use Xero from the app.`)
+  const who = await f('https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)', { headers: { Authorization: `Bearer ${token}` } })
+  if (!who.ok) throw new HttpError(401, 'Google sign-in has expired — sign in again.')
+  const email = (((await who.json()) as { user?: { emailAddress?: string } }).user?.emailAddress ?? '').toLowerCase()
+  if (!email.endsWith(`@${HOSTED_DOMAIN}`)) throw new HttpError(403, `Only @${HOSTED_DOMAIN} accounts can use Xero from the app (signed in as ${email || 'unknown'}).`)
   return email
 }
 

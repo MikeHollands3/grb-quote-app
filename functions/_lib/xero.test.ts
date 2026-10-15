@@ -33,17 +33,22 @@ const GID = '551976286145-qh78tqhsrd7cr9oqv9h28u8k06m1q8ut.apps.googleuserconten
 const req = (token?: string) => new Request('https://app.example/api/xero/status', { headers: token ? { Authorization: `Bearer ${token}` } : {} })
 
 describe('verifyGoogle', () => {
-  const tokeninfo = (info: object, status = 200) => fake([['GET https://oauth2.googleapis.com/tokeninfo', () => [status, info]]]).f
+  // Real app tokens carry no "email" scope: tokeninfo has aud/azp but no email; Drive about.get gives the email.
+  const google = (info: object, email: string, status = 200) =>
+    fake([
+      ['GET https://oauth2.googleapis.com/tokeninfo', () => [status, info]],
+      ['GET https://www.googleapis.com/drive/v3/about', () => [200, { user: { emailAddress: email } }]],
+    ]).f
 
-  it('accepts a GRB account token issued to this app', async () => {
-    const f = tokeninfo({ azp: GID, email: 'George@grbhomeimprovements.co.uk', email_verified: 'true' })
+  it('accepts a GRB account token issued to this app (tokeninfo without email)', async () => {
+    const f = google({ azp: GID, aud: GID, scope: 'https://www.googleapis.com/auth/drive.file' }, 'George@grbhomeimprovements.co.uk')
     expect(await verifyGoogle(req('t'), env(), f)).toBe('george@grbhomeimprovements.co.uk')
   })
   it('rejects missing, expired, other-app and non-GRB tokens', async () => {
-    await expect(verifyGoogle(req(), env(), tokeninfo({}))).rejects.toMatchObject({ status: 401 })
-    await expect(verifyGoogle(req('t'), env(), tokeninfo({ error: 'invalid' }, 400))).rejects.toMatchObject({ status: 401 })
-    await expect(verifyGoogle(req('t'), env(), tokeninfo({ azp: 'other', email: 'a@grbhomeimprovements.co.uk', email_verified: 'true' }))).rejects.toMatchObject({ status: 403 })
-    await expect(verifyGoogle(req('t'), env(), tokeninfo({ azp: GID, email: 'a@gmail.com', email_verified: 'true' }))).rejects.toMatchObject({ status: 403 })
+    await expect(verifyGoogle(req(), env(), google({}, ''))).rejects.toMatchObject({ status: 401 })
+    await expect(verifyGoogle(req('t'), env(), google({ error: 'invalid' }, '', 400))).rejects.toMatchObject({ status: 401 })
+    await expect(verifyGoogle(req('t'), env(), google({ azp: 'other' }, 'a@grbhomeimprovements.co.uk'))).rejects.toMatchObject({ status: 403 })
+    await expect(verifyGoogle(req('t'), env(), google({ azp: GID }, 'a@gmail.com'))).rejects.toMatchObject({ status: 403 })
   })
 })
 
