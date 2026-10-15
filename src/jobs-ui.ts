@@ -36,6 +36,8 @@ type View = { kind: 'list' } | { kind: 'job'; id: string } | { kind: 'people' }
 
 export interface JobsOptions {
   onOpenQuote: (quoteId: string) => void
+  /** Optional markup above the job list (Google calendar/sheet status). */
+  header?: () => string
 }
 
 export function mountJobs(root: HTMLElement, opts: JobsOptions) {
@@ -77,6 +79,7 @@ export function mountJobs(root: HTMLElement, opts: JobsOptions) {
     return `
       <h1>Jobs</h1>
       <p class="lede">Won quotes become jobs: programme, who's on site, and the payment plan.</p>
+      ${opts.header?.() ?? ''}
       <button type="button" class="ghost" data-people>Team &amp; subbies (${people.length})</button>
       <h2>Booked &amp; on site</h2>
       <div class="card">${
@@ -286,6 +289,10 @@ export function mountJobs(root: HTMLElement, opts: JobsOptions) {
 
   return {
     refresh,
+    /** Re-render without reloading (e.g. sync status changed). */
+    rerender: () => {
+      if (!root.hidden && view.kind === 'list') render()
+    },
     show(jobId: string) {
       view = { kind: 'job', id: jobId }
       return refresh()

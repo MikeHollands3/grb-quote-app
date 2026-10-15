@@ -6,6 +6,7 @@ import { mountDetailed } from './detailed-ui'
 import { mountSaved } from './saved-ui'
 import { createDriveSync, HOSTED_DOMAIN } from './drive-sync'
 import { mountJobs } from './jobs-ui'
+import { createJobsSync } from './jobs-sync'
 import { mountMoney } from './money-ui'
 import { jobFromQuote } from './job-from-quote'
 import { jobsChanged, listJobs, onJobsChanged, putJob } from './lib/jobs-store'
@@ -201,7 +202,31 @@ const saved = mountSaved(document.getElementById('saved')!, {
   currentId: () => detailed.currentId(),
 })
 
+const jobsSync = createJobsSync(drive)
+const when = (iso?: string) =>
+  iso ? new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''
+
+function googleCard(): string {
+  const st = jobsSync.state()
+  if (st.kind === 'off')
+    return `<div class="card drive"><h3>Google Calendar &amp; Sheet</h3><p class="hint">Connect Google Drive on the Quotes tab to put jobs in a shared “GRB Jobs” calendar and the “GRB Jobs &amp; Payments” sheet.</p></div>`
+  if (st.kind === 'needs-auth')
+    return `<div class="card drive"><h3>Google Calendar &amp; Sheet</h3>
+      <p class="hint">${st.reason === 'calendar' ? 'One more permission needed: allow GRB Quick Quote to create its own “GRB Jobs” calendar.' : 'Google sign-in has expired.'}</p>
+      <button type="button" class="primary" data-gsync>${st.reason === 'calendar' ? 'Allow calendar &amp; sync' : 'Sign in &amp; sync'}</button></div>`
+  const links = [
+    st.calJobs && `<a class="ghost file-btn" target="_blank" rel="noopener" href="https://calendar.google.com/calendar/r?cid=${encodeURIComponent(st.calJobs)}">Jobs calendar</a>`,
+    st.sheetId && `<a class="ghost file-btn" target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/${encodeURIComponent(st.sheetId)}">Sheet</a>`,
+  ].filter(Boolean)
+  return `<div class="card drive"><h3>Google Calendar &amp; Sheet <span class="tag tag-in-house">on</span></h3>
+    <p class="hint">${st.syncing ? 'Syncing…' : st.lastSync ? `Up to date · ${when(st.lastSync)}` : 'Not synced yet'}</p>
+    ${st.error ? `<p class="drive-error">${escHtml(st.error)}</p>` : ''}
+    <div class="actions"><button type="button" class="ghost" data-gsync ${st.syncing ? 'disabled' : ''}>Sync now</button>${links.join('')}</div>
+  </div>`
+}
+
 const jobsUi = mountJobs(document.getElementById('jobs')!, {
+  header: googleCard,
   onOpenQuote: async (quoteId) => {
     const q = await getQuote(quoteId)
     if (!q) return alert('That quote is no longer saved on this device.')
@@ -218,6 +243,11 @@ const money = mountMoney(document.getElementById('money')!, {
   },
 })
 onJobsChanged(() => void loadJobIndex())
+jobsSync.subscribe(() => jobsUi.rerender())
+drive.subscribe(() => jobsUi.rerender())
+document.getElementById('jobs')!.addEventListener('click', (e) => {
+  if ((e.target as HTMLElement).closest('[data-gsync]')) jobsSync.connectAndSync()
+})
 
 document.getElementById('saved')!.addEventListener('click', async (e) => {
   const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-won],[data-view-job]')

@@ -14,7 +14,9 @@ import { fileBase, quotePdf, type EstimateState } from './quote-files'
 const GRB_CLIENT_ID = '551976286145-qh78tqhsrd7cr9oqv9h28u8k06m1q8ut.apps.googleusercontent.com'
 export const CLIENT_ID: string = import.meta.env.VITE_GOOGLE_CLIENT_ID || GRB_CLIENT_ID
 export const HOSTED_DOMAIN = 'grbhomeimprovements.co.uk'
-const SCOPE = 'https://www.googleapis.com/auth/drive.file'
+export const CALENDAR_SCOPE = 'https://www.googleapis.com/auth/calendar.app.created'
+// drive.file: only files the app creates. calendar.app.created: only calendars the app creates.
+const SCOPE = `https://www.googleapis.com/auth/drive.file ${CALENDAR_SCOPE}`
 const SETTINGS = 'grb.drive'
 const TOKEN = 'grb.drive.token'
 
@@ -25,11 +27,14 @@ interface Settings {
 interface Token {
   value: string
   expiresAt: number
+  /** Space-separated scopes Google actually granted (the user can untick some). */
+  scope?: string
 }
 
 /* Minimal typing for the bits of Google Identity Services we use. */
 interface TokenResponse {
   access_token?: string
+  scope?: string
   expires_in?: number
   error?: string
   error_description?: string
@@ -147,7 +152,7 @@ export function createDriveSync() {
       emit()
       return
     }
-    token = { value: r.access_token, expiresAt: Date.now() + (r.expires_in ?? 3600) * 1000 }
+    token = { value: r.access_token, expiresAt: Date.now() + (r.expires_in ?? 3600) * 1000, scope: r.scope }
     try {
       const email = await new Drive(token.value).whoAmI()
       if (!email.toLowerCase().endsWith(`@${HOSTED_DOMAIN}`)) {
@@ -306,6 +311,21 @@ export function createDriveSync() {
       emit()
     },
     warmUp,
+    /** Current Google access for other integrations (jobs calendar/sheet), or null if not signed in now. */
+    access() {
+      if (!settings || !tokenValid()) return null
+      return {
+        token: token!.value,
+        email: settings.email,
+        folderId: settings.folderId,
+        hasCalendar: !!token!.scope?.split(' ').includes(CALENDAR_SCOPE),
+      }
+    },
+    connected: () => !!settings,
+    /** Must be called synchronously in a click handler. Signs in (or asks for newly added permissions), then runs `then`. */
+    authorize(then?: () => void) {
+      requestToken(then)
+    },
   }
 }
 

@@ -75,6 +75,30 @@ export class Drive {
     return created.id
   }
 
+  /** Id of an app-created file with this name in a folder, if any. */
+  async findFile(name: string, parent: string): Promise<string | undefined> {
+    const q = `name = '${name.replace(/'/g, "\\'")}' and '${parent}' in parents and trashed = false`
+    const list = await this.call<{ files: { id: string }[] }>(
+      `${API}/files?q=${encodeURIComponent(q)}&fields=files(id)&supportsAllDrives=true&includeItemsFromAllDrives=true`,
+    )
+    return list.files[0]?.id
+  }
+
+  /** Download a JSON file's content. */
+  readJson<T>(id: string): Promise<T> {
+    return this.call<T>(`${API}/files/${encodeURIComponent(id)}?alt=media&supportsAllDrives=true`)
+  }
+
+  /** Move an app-created file (e.g. the jobs spreadsheet) into a folder. */
+  async moveTo(id: string, folderId: string): Promise<void> {
+    const f = await this.call<{ parents?: string[] }>(`${API}/files/${encodeURIComponent(id)}?fields=parents&supportsAllDrives=true`)
+    const remove = (f.parents ?? []).filter((p) => p !== folderId).join(',')
+    await this.call(
+      `${API}/files/${encodeURIComponent(id)}?addParents=${folderId}${remove ? `&removeParents=${remove}` : ''}&fields=id&supportsAllDrives=true`,
+      { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: '{}' },
+    )
+  }
+
   /**
    * Create or replace a file. With an existing id the content and name are
    * updated in place (same file, so shared links keep working); if that file

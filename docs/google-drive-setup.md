@@ -55,3 +55,18 @@ Saved tab → **Connect Google Drive** → choose your GRB account. From then on
 Google sign-ins last an hour; after that the next Save briefly re-confirms the
 account. **Open folder** jumps to the Drive folder. The folder can be moved into a
 shared drive and the app keeps using it.
+
+## 4. Jobs calendar and sheet
+
+Jobs tab → **Google Calendar & Sheet** card → **Allow calendar & sync** (first time only). The app creates:
+
+- **GRB Jobs** calendar — one all-day entry per stage: `CR30/1 · Roof — Top Roofing`, site address as the
+  location, who/contact details in the description. Coloured by trade.
+- **GRB Payments** calendar — each unpaid payment on its due date (shown as "free" so it doesn't block time).
+- **GRB Jobs & Payments** sheet in the GRB Quotes folder — Payments and Programme tabs.
+
+Edit jobs in the app, not in Calendar or the sheet: the app overwrites its own entries on the next sync.
+
+**Share with the team:** in Google Calendar (web) → hover **GRB Jobs** → ⋮ → **Settings and sharing** →
+**Share with specific people or groups** (or make it available to everyone at grbhomeimprovements.co.uk).
+Same for GRB Payments if the office should see it. Share the sheet from Drive as usual.
