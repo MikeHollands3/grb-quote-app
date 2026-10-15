@@ -53,7 +53,8 @@ describe('computeDetailed — GRB price build-up on the workbook example', () =>
   const contingency = direct * 0.12
   const markup = (direct + contingency) * 0.2
   const mgmtFee = subbed * 0.2
-  const net = direct + contingency + markup + subbed + mgmtFee + atCost
+  const subContingency = subbed * 0.05
+  const net = direct + contingency + markup + subbed + mgmtFee + subContingency + atCost
 
   const r = computeDetailed(example(), lib, settings)
 
@@ -68,6 +69,12 @@ describe('computeDetailed — GRB price build-up on the workbook example', () =>
     expect(r.subcontractBase).toBeCloseTo(subbed, 2)
     expect(r.margin.mgmtFee).toBeCloseTo(mgmtFee, 2)
     expect(r.subcontract).toBeCloseTo(subbed + mgmtFee, 2)
+  })
+
+  it('subbed packages carry 5% contingency, not marked up', () => {
+    expect(r.subContingency).toBeCloseTo(subContingency, 2)
+    expect(r.margin.contingency).toBeCloseTo(contingency + subContingency, 2)
+    expect(r.margin.inclContingency).toBeCloseTo(markup + mgmtFee + contingency + subContingency, 2)
   })
 
   it('plant, waste and fees pass through at cost', () => {

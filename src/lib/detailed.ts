@@ -81,6 +81,8 @@ export interface DetailedInput {
   /** Drawings + spec confirmed: contingency drops from 12% to 8% (the UI sets contingencyPct). */
   drawingsConfirmed: boolean
   contingencyPct: number
+  /** Contingency on subcontracted packages (roof, electrics, plumbing); not marked up. */
+  subContingencyPct: number
   markupPct: number
   subcontractFeePct: number
 }
@@ -249,7 +251,8 @@ export function computeDetailed(input: DetailedInput, lib: RateLibrary, s: Setti
   const markup = (direct + contingency) * n(input.markupPct)
   const mgmtFee = subcontractBase * n(input.subcontractFeePct)
   const subcontract = subcontractBase + mgmtFee
-  const net = direct + contingency + markup + subcontract + atCost
+  const subContingency = subcontractBase * n(input.subContingencyPct)
+  const net = direct + contingency + markup + subcontract + subContingency + atCost
   const vat = s.vatRegistered ? net * s.vat : 0
   const total = net + vat
 
@@ -274,6 +277,7 @@ export function computeDetailed(input: DetailedInput, lib: RateLibrary, s: Setti
     access,
     direct,
     contingency,
+    subContingency,
     markup,
     subcontract,
     net,
@@ -285,8 +289,9 @@ export function computeDetailed(input: DetailedInput, lib: RateLibrary, s: Setti
       mgmtFee,
       totalMarkup,
       pct: net ? totalMarkup / net : 0,
-      inclContingency: totalMarkup + contingency,
-      inclContingencyPct: net ? (totalMarkup + contingency) / net : 0,
+      contingency: contingency + subContingency,
+      inclContingency: totalMarkup + contingency + subContingency,
+      inclContingencyPct: net ? (totalMarkup + contingency + subContingency) / net : 0,
     },
   }
 }

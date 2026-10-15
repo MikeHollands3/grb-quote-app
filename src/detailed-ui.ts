@@ -46,7 +46,12 @@ function load(): State {
     const raw = localStorage.getItem(STORE)
     if (raw) {
       const s = JSON.parse(raw) as State
-      if (s?.input?.labour && s.input.footings && rates.regions[s.region] !== undefined) return s
+      if (s?.input?.labour && s.input.footings && rates.regions[s.region] !== undefined) {
+        // Drafts saved before these settings existed.
+        s.input.sundries ??= 0
+        s.input.subContingencyPct ??= 0.05
+        return s
+      }
     }
   } catch {
     /* storage blocked or corrupt — fall back to the example */
@@ -130,9 +135,9 @@ function fixedRows(section: string, lines: { item: string; qty: number }[]) {
 
 const TAGS: Record<string, [string, string]> = {
   footings: ['in-house', 'Own team — in direct works, carries contingency and overhead &amp; profit.'],
-  roof: ['subbed', 'Subcontracted — base cost plus the subcontract markup.'],
-  electrical: ['subbed', 'Subcontracted — base cost plus the subcontract markup.'],
-  plumbing: ['subbed', 'Subcontracted — base cost plus the subcontract markup.'],
+  roof: ['subbed', 'Subcontracted — base cost plus the subcontract markup and contingency.'],
+  electrical: ['subbed', 'Subcontracted — base cost plus the subcontract markup and contingency.'],
+  plumbing: ['subbed', 'Subcontracted — base cost plus the subcontract markup and contingency.'],
   plant: ['at cost', 'Passed through at cost — no markup.'],
   waste: ['at cost', 'Passed through at cost — no markup.'],
 }
@@ -289,6 +294,7 @@ function view(s: State) {
     <div class="bu"><span>Overhead &amp; profit on direct works</span>${pctInput('input.markupPct', i.markupPct, 'Markup percent')}${out('markup')}</div>
     <div class="bu"><span>Subbed: roof, electrics, plumbing</span>${out('subcontractBase')}</div>
     <div class="bu"><span>Subcontract markup</span>${pctInput('input.subcontractFeePct', i.subcontractFeePct, 'Subcontract markup percent')}${out('mgmtFee')}</div>
+    <div class="bu"><span>Contingency on subbed packages</span>${pctInput('input.subContingencyPct', i.subContingencyPct ?? 0, 'Subcontract contingency percent')}${out('subContingency')}</div>
     <div class="bu"><span>Plant, waste &amp; fees (at cost)</span>${out('atCost')}</div>
     <div class="bu strong"><span>Net price (ex VAT)</span>${out('net')}</div>
     <div class="bu"><span>VAT</span>${out('vat')}</div>
@@ -304,7 +310,7 @@ function view(s: State) {
     <summary>Margin breakdown</summary>
     <dl class="calc">
       <dt>Total cost base (excl. contingency &amp; markup)</dt><dd>${out('m.costBase')}</dd>
-      <dt>Contingency</dt><dd>${out('contingency2')}</dd>
+      <dt>Contingency (own work + subbed)</dt><dd>${out('contingency2')}</dd>
       <dt>Overhead &amp; profit</dt><dd>${out('markup2')}</dd>
       <dt>Subcontract markup</dt><dd>${out('m.mgmtFee')}</dd>
       <dt>Gross margin (excl. contingency)</dt><dd>${out('m.margin')}</dd>
@@ -339,7 +345,8 @@ function outputs(r: DetailedResult, s: State): Record<string, string> {
     access: gbp.format(r.access),
     direct: gbp.format(r.direct),
     contingency: gbp.format(r.contingency),
-    contingency2: gbp.format(r.contingency),
+    contingency2: gbp.format(r.margin.contingency),
+    subContingency: gbp.format(r.subContingency),
     markup: gbp.format(r.markup),
     markup2: gbp.format(r.markup),
     footingsInHouse: gbp.format(r.footingsInHouse),

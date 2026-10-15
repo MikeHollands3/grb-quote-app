@@ -26,7 +26,8 @@ Improvements". Keep the light/dark token system in `src/styles.css`. Drop the re
 - **Regional uplift applies to labour and locally-sourced materials only** — NOT to nationally-priced
   supply items (kitchens, sanitaryware, premium doors, bi-folds). This matters for the phase-2
   detailed estimator; misapplying it inflates estimates. The quick-quote benchmarks already embed it.
-- Contingency: 12% pre-drawings, 8% once drawings + spec confirmed.
+- Contingency: 12% pre-drawings, 8% once drawings + spec confirmed (on direct works). Subcontracted packages
+  carry their own 5% contingency on the subbie base cost (not marked up).
 - Markup: 20% overhead & profit on direct works (+ contingency).
 - Package treatment (GRB practice, deliberately differs from the workbook, which marks up all of section 3):
   footings are **in-house** (part of direct works, so they carry contingency + O&P); roof, electrics and
