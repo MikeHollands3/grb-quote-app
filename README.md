@@ -21,6 +21,13 @@ npm run preview    # preview the built app
 ## Data
 All rates live in `src/data/rates.json` — benchmarks (£/m² by job + spec), regional multipliers, roof adders, VAT. Regenerate from the Excel master when rates change (see CLAUDE.md).
 
+The full rate library (118 labour/material/waste lines, fees, roof coverings, plant hire) is exported to `src/data/rate-library.json` for the detailed estimator. Download the master from the GRB "Pricing Tool" Drive folder as .xlsx, then run:
+
+```bash
+pip install openpyxl
+python3 scripts/export-rate-library.py "GRB Home Improvements - Pricing Tool.xlsx"
+```
+
 ## Structure
 - `src/lib/pricing.ts` — pure pricing engine (unit-tested)
 - `src/lib/types.ts` — shared types

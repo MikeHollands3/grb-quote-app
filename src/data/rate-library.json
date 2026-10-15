@@ -1,0 +1,1537 @@
+{
+  "source": "pricing-tool.xlsx",
+  "items": [
+    {
+      "category": "Labour",
+      "item": "General labourer",
+      "unit": "day",
+      "rate": 130.0,
+      "low": 100.0,
+      "high": 160.0,
+      "source": "MyBuilder / TradeCalculator 2026 (national mid)"
+    },
+    {
+      "category": "Labour",
+      "item": "Skilled labourer",
+      "unit": "day",
+      "rate": 160.0,
+      "low": 130.0,
+      "high": 190.0,
+      "source": "TradeCalculator / 4A Trades 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "General builder (multi-skilled)",
+      "unit": "day",
+      "rate": 220.0,
+      "low": 180.0,
+      "high": 260.0,
+      "source": "Concretecalculate 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Groundworker",
+      "unit": "day",
+      "rate": 190.0,
+      "low": 160.0,
+      "high": 230.0,
+      "source": "Phoenix Gray 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Bricklayer",
+      "unit": "day",
+      "rate": 220.0,
+      "low": 180.0,
+      "high": 280.0,
+      "source": "TradeCalculator 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Carpenter / joiner",
+      "unit": "day",
+      "rate": 210.0,
+      "low": 180.0,
+      "high": 280.0,
+      "source": "TradeCalculator 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Roofer",
+      "unit": "day",
+      "rate": 230.0,
+      "low": 200.0,
+      "high": 300.0,
+      "source": "TradeCalculator 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Plasterer",
+      "unit": "day",
+      "rate": 210.0,
+      "low": 180.0,
+      "high": 260.0,
+      "source": "TradeCalculator 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Plumber / heating engineer",
+      "unit": "day",
+      "rate": 240.0,
+      "low": 200.0,
+      "high": 300.0,
+      "source": "TradeCalculator 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Electrician",
+      "unit": "day",
+      "rate": 250.0,
+      "low": 200.0,
+      "high": 320.0,
+      "source": "TradeCalculator / Concretecalculate 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Gas Safe engineer",
+      "unit": "day",
+      "rate": 281.0,
+      "low": 250.0,
+      "high": 350.0,
+      "source": "Costestimator 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Painter / decorator",
+      "unit": "day",
+      "rate": 180.0,
+      "low": 150.0,
+      "high": 220.0,
+      "source": "TradeCalculator 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Tiler",
+      "unit": "day",
+      "rate": 190.0,
+      "low": 140.0,
+      "high": 240.0,
+      "source": "PriceYourJob 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Scaffolder",
+      "unit": "day",
+      "rate": 200.0,
+      "low": 160.0,
+      "high": 250.0,
+      "source": "PriceYourJob 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Foreman / working supervisor",
+      "unit": "day",
+      "rate": 275.0,
+      "low": 240.0,
+      "high": 320.0,
+      "source": "Costestimator 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Plant / machine operator",
+      "unit": "day",
+      "rate": 200.0,
+      "low": 170.0,
+      "high": 260.0,
+      "source": "Planit / MyBuilder 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Steel erector / fixer",
+      "unit": "day",
+      "rate": 230.0,
+      "low": 200.0,
+      "high": 300.0,
+      "source": "DWP job ads 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Dryliner / plasterboard fixer",
+      "unit": "day",
+      "rate": 200.0,
+      "low": 170.0,
+      "high": 260.0,
+      "source": "Concretemath 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Floor screeder",
+      "unit": "day",
+      "rate": 210.0,
+      "low": 180.0,
+      "high": 280.0,
+      "source": "Concretemath 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Renderer (external)",
+      "unit": "day",
+      "rate": 210.0,
+      "low": 170.0,
+      "high": 280.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Labour",
+      "item": "Kitchen fitter",
+      "unit": "day",
+      "rate": 240.0,
+      "low": 180.0,
+      "high": 350.0,
+      "source": "WhatToCharge 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Glazier / window & door fitter",
+      "unit": "day",
+      "rate": 200.0,
+      "low": 160.0,
+      "high": 280.0,
+      "source": "PriceYourJob 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Flooring fitter (LVT/laminate/carpet)",
+      "unit": "day",
+      "rate": 180.0,
+      "low": 150.0,
+      "high": 240.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Labour",
+      "item": "Landscaper / paver",
+      "unit": "day",
+      "rate": 180.0,
+      "low": 150.0,
+      "high": 260.0,
+      "source": "PriceYourJob 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Welder / metal fabricator",
+      "unit": "day",
+      "rate": 230.0,
+      "low": 180.0,
+      "high": 300.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Labour",
+      "item": "Leadworker (roofing lead)",
+      "unit": "day",
+      "rate": 250.0,
+      "low": 200.0,
+      "high": 320.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Labour",
+      "item": "Damp-proofing / tanking specialist",
+      "unit": "day",
+      "rate": 220.0,
+      "low": 180.0,
+      "high": 300.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Labour",
+      "item": "Demolition / strip-out labourer",
+      "unit": "day",
+      "rate": 150.0,
+      "low": 120.0,
+      "high": 200.0,
+      "source": "Concretemath 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Handyman / multi-trade",
+      "unit": "day",
+      "rate": 170.0,
+      "low": 140.0,
+      "high": 240.0,
+      "source": "MendorEnd 2026"
+    },
+    {
+      "category": "Labour",
+      "item": "Apprentice / improver",
+      "unit": "day",
+      "rate": 90.0,
+      "low": 60.0,
+      "high": 140.0,
+      "source": "NLW Apr 2026 basis"
+    },
+    {
+      "category": "Material",
+      "item": "Clay facing bricks",
+      "unit": "per 1,000",
+      "rate": 450.0,
+      "low": 350.0,
+      "high": 550.0,
+      "source": "BuildersMerchantsDirect 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Concrete blocks 100mm (dense)",
+      "unit": "per 100",
+      "rate": 80.0,
+      "low": 65.0,
+      "high": 95.0,
+      "source": "BuildersMerchantsDirect 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Aircrete blocks 100mm (Thermalite)",
+      "unit": "per m2",
+      "rate": 18.0,
+      "low": 13.0,
+      "high": 24.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Ready-mix concrete (C25-C35)",
+      "unit": "per m3",
+      "rate": 125.0,
+      "low": 95.0,
+      "high": 135.0,
+      "source": "BuildersMerchantsDirect 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Cement (25kg bag)",
+      "unit": "each",
+      "rate": 6.0,
+      "low": 5.0,
+      "high": 7.5,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Sharp sand (bulk bag ~0.6 m3)",
+      "unit": "each",
+      "rate": 50.0,
+      "low": 40.0,
+      "high": 65.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Building / soft sand (bulk bag)",
+      "unit": "each",
+      "rate": 50.0,
+      "low": 40.0,
+      "high": 65.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "MOT Type 1 sub-base (bulk bag)",
+      "unit": "each",
+      "rate": 55.0,
+      "low": 45.0,
+      "high": 70.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Timber C16 47x100mm 4.8m",
+      "unit": "per length",
+      "rate": 4.85,
+      "low": 4.2,
+      "high": 5.5,
+      "source": "BuildersMerchantsDirect 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Timber C24 47x150mm 4.8m",
+      "unit": "per length",
+      "rate": 7.25,
+      "low": 6.5,
+      "high": 8.0,
+      "source": "BuildersMerchantsDirect 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Timber C24 47x200mm 4.8m",
+      "unit": "per length",
+      "rate": 10.25,
+      "low": 9.0,
+      "high": 11.5,
+      "source": "BuildersMerchantsDirect 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Treated batten 50x75mm 3.0m",
+      "unit": "per length",
+      "rate": 2.1,
+      "low": 1.8,
+      "high": 2.4,
+      "source": "BuildersMerchantsDirect 2026"
+    },
+    {
+      "category": "Material",
+      "item": "OSB3 board 18mm 2400x1200",
+      "unit": "each",
+      "rate": 32.0,
+      "low": 26.0,
+      "high": 40.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Plywood WBP 18mm 2400x1200",
+      "unit": "each",
+      "rate": 42.0,
+      "low": 34.0,
+      "high": 52.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Plasterboard 12.5mm 2400x1200",
+      "unit": "each",
+      "rate": 10.0,
+      "low": 8.0,
+      "high": 13.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Moisture board 12.5mm 2400x1200",
+      "unit": "each",
+      "rate": 14.0,
+      "low": 11.0,
+      "high": 18.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "PIR insulation 100mm 2400x1200",
+      "unit": "each",
+      "rate": 52.0,
+      "low": 42.0,
+      "high": 62.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "PIR insulation 50mm 2400x1200",
+      "unit": "each",
+      "rate": 28.0,
+      "low": 22.0,
+      "high": 34.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Loft insulation roll (mineral wool)",
+      "unit": "each",
+      "rate": 25.0,
+      "low": 18.0,
+      "high": 34.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Multi-finish plaster (25kg bag)",
+      "unit": "each",
+      "rate": 11.0,
+      "low": 9.0,
+      "high": 14.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Concrete roof tiles (interlocking)",
+      "unit": "per m2",
+      "rate": 22.0,
+      "low": 15.0,
+      "high": 32.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Natural slate",
+      "unit": "per m2",
+      "rate": 60.0,
+      "low": 45.0,
+      "high": 85.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Breathable roofing membrane",
+      "unit": "per m2",
+      "rate": 2.5,
+      "low": 1.8,
+      "high": 3.5,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "EPDM rubber flat roof (covering)",
+      "unit": "per m2",
+      "rate": 55.0,
+      "low": 40.0,
+      "high": 70.0,
+      "source": "DDK Roofing 2026 (supply+fit)"
+    },
+    {
+      "category": "Material",
+      "item": "GRP fibreglass flat roof (covering)",
+      "unit": "per m2",
+      "rate": 65.0,
+      "low": 50.0,
+      "high": 80.0,
+      "source": "DDK Roofing 2026 (supply+fit)"
+    },
+    {
+      "category": "Material",
+      "item": "Felt torch-on flat roof (covering)",
+      "unit": "per m2",
+      "rate": 42.0,
+      "low": 30.0,
+      "high": 55.0,
+      "source": "DDK Roofing 2026 (supply+fit)"
+    },
+    {
+      "category": "Material",
+      "item": "Steel beam / UB (supply, per m)",
+      "unit": "per metre",
+      "rate": 85.0,
+      "low": 50.0,
+      "high": 120.0,
+      "source": "MyBuilder / RSJ.info 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Steel beam / UB (supply, per kg)",
+      "unit": "per kg",
+      "rate": 1.35,
+      "low": 1.1,
+      "high": 1.6,
+      "source": "RSJ.info 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Concrete lintel (1200mm)",
+      "unit": "each",
+      "rate": 22.0,
+      "low": 15.0,
+      "high": 32.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Padstone",
+      "unit": "each",
+      "rate": 25.0,
+      "low": 15.0,
+      "high": 40.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "DPC / DPM membrane (roll)",
+      "unit": "each",
+      "rate": 35.0,
+      "low": 25.0,
+      "high": 50.0,
+      "source": "Estimate - verify with merchant"
+    },
+    {
+      "category": "Material",
+      "item": "uPVC casement window (supply)",
+      "unit": "each",
+      "rate": 350.0,
+      "low": 250.0,
+      "high": 500.0,
+      "source": "Estimate - verify with supplier"
+    },
+    {
+      "category": "Material",
+      "item": "Rooflight (Velux mid-size, supply)",
+      "unit": "each",
+      "rate": 350.0,
+      "low": 250.0,
+      "high": 550.0,
+      "source": "Estimate - verify with supplier"
+    },
+    {
+      "category": "Material",
+      "item": "Composite external door (supply)",
+      "unit": "each",
+      "rate": 700.0,
+      "low": 450.0,
+      "high": 1100.0,
+      "source": "Estimate - verify with supplier"
+    },
+    {
+      "category": "Material",
+      "item": "Aluminium bi-fold doors 3m (supply)",
+      "unit": "each",
+      "rate": 2800.0,
+      "low": 2000.0,
+      "high": 4000.0,
+      "source": "Estimate - verify with supplier"
+    },
+    {
+      "category": "Material",
+      "item": "Kitchen units (supply, per lin m)",
+      "unit": "per lin m",
+      "rate": 350.0,
+      "low": 200.0,
+      "high": 600.0,
+      "source": "Estimate - Howdens/Wickes trade"
+    },
+    {
+      "category": "Material",
+      "item": "Laminate worktop (per lin m)",
+      "unit": "per lin m",
+      "rate": 60.0,
+      "low": 40.0,
+      "high": 90.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Material",
+      "item": "Quartz / stone worktop (per m2)",
+      "unit": "per m2",
+      "rate": 350.0,
+      "low": 250.0,
+      "high": 500.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Material",
+      "item": "Wall / floor tiles (supply, per m2)",
+      "unit": "per m2",
+      "rate": 35.0,
+      "low": 15.0,
+      "high": 90.0,
+      "source": "Estimate - Topps/merchant"
+    },
+    {
+      "category": "Material",
+      "item": "Bathroom suite (WC+basin+bath, supply)",
+      "unit": "each",
+      "rate": 1200.0,
+      "low": 600.0,
+      "high": 2500.0,
+      "source": "NearbyTraders 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Shower enclosure + tray (supply)",
+      "unit": "each",
+      "rate": 500.0,
+      "low": 300.0,
+      "high": 900.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Material",
+      "item": "Electric underfloor heating mat (per m2)",
+      "unit": "per m2",
+      "rate": 55.0,
+      "low": 40.0,
+      "high": 70.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Material",
+      "item": "Extractor fan (supply)",
+      "unit": "each",
+      "rate": 50.0,
+      "low": 40.0,
+      "high": 80.0,
+      "source": "NearbyTraders 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Double socket point (supply+fit)",
+      "unit": "per point",
+      "rate": 75.0,
+      "low": 60.0,
+      "high": 110.0,
+      "source": "MyJobQuote / Squote 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Light point / ceiling rose (supply+fit)",
+      "unit": "per point",
+      "rate": 90.0,
+      "low": 70.0,
+      "high": 130.0,
+      "source": "Squote 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Recessed downlight (supply+fit)",
+      "unit": "per point",
+      "rate": 100.0,
+      "low": 85.0,
+      "high": 180.0,
+      "source": "Squote / Sparky 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Light switch (supply+fit)",
+      "unit": "per point",
+      "rate": 60.0,
+      "low": 45.0,
+      "high": 80.0,
+      "source": "VoltFlow 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Cooker / oven outlet point",
+      "unit": "per point",
+      "rate": 120.0,
+      "low": 90.0,
+      "high": 180.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Material",
+      "item": "Outdoor socket (IP-rated)",
+      "unit": "per point",
+      "rate": 130.0,
+      "low": 90.0,
+      "high": 185.0,
+      "source": "MyJobQuote 2026"
+    },
+    {
+      "category": "Material",
+      "item": "New radial / dedicated circuit",
+      "unit": "each",
+      "rate": 600.0,
+      "low": 450.0,
+      "high": 850.0,
+      "source": "Squote 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Consumer unit replacement (RCBO, certified)",
+      "unit": "each",
+      "rate": 600.0,
+      "low": 450.0,
+      "high": 1200.0,
+      "source": "BookaBuilderUK / Total Skills 2026"
+    },
+    {
+      "category": "Material",
+      "item": "EICR / test & certification",
+      "unit": "each",
+      "rate": 200.0,
+      "low": 120.0,
+      "high": 300.0,
+      "source": "MyJobQuote 2026"
+    },
+    {
+      "category": "Material",
+      "item": "EV charger install (7kW)",
+      "unit": "each",
+      "rate": 1000.0,
+      "low": 800.0,
+      "high": 1400.0,
+      "source": "Estimate - verify (OZEV grants vary)"
+    },
+    {
+      "category": "Material",
+      "item": "Radiator (supply + fit)",
+      "unit": "each",
+      "rate": 275.0,
+      "low": 150.0,
+      "high": 550.0,
+      "source": "WhatToCharge / MyJobQuote 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Heated towel rail (supply + fit)",
+      "unit": "each",
+      "rate": 250.0,
+      "low": 120.0,
+      "high": 700.0,
+      "source": "MyBuilder 2026"
+    },
+    {
+      "category": "Material",
+      "item": "TRV / radiator valve (supply + fit)",
+      "unit": "per valve",
+      "rate": 25.0,
+      "low": 15.0,
+      "high": 40.0,
+      "source": "TailoredQuote 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Basin - connect & fit",
+      "unit": "each",
+      "rate": 180.0,
+      "low": 120.0,
+      "high": 250.0,
+      "source": "Bathroom Mountain 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Bath - connect & fit",
+      "unit": "each",
+      "rate": 300.0,
+      "low": 200.0,
+      "high": 400.0,
+      "source": "Bathroom Mountain 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Shower - mixer/electric install",
+      "unit": "each",
+      "rate": 375.0,
+      "low": 250.0,
+      "high": 500.0,
+      "source": "Bathroom Mountain 2026"
+    },
+    {
+      "category": "Material",
+      "item": "WC - connect & fit",
+      "unit": "each",
+      "rate": 180.0,
+      "low": 150.0,
+      "high": 250.0,
+      "source": "MyBuilder 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Kitchen sink + tap - connect",
+      "unit": "each",
+      "rate": 200.0,
+      "low": 150.0,
+      "high": 300.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Material",
+      "item": "Washing machine point (plumb in)",
+      "unit": "per point",
+      "rate": 120.0,
+      "low": 80.0,
+      "high": 150.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Material",
+      "item": "Dishwasher point (plumb in)",
+      "unit": "per point",
+      "rate": 120.0,
+      "low": 80.0,
+      "high": 150.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Material",
+      "item": "Outside tap",
+      "unit": "per point",
+      "rate": 120.0,
+      "low": 80.0,
+      "high": 150.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Material",
+      "item": "First-fix pipework allowance (per wet room)",
+      "unit": "per room",
+      "rate": 500.0,
+      "low": 400.0,
+      "high": 1200.0,
+      "source": "Checkatrade 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Combi boiler replacement (supply + fit)",
+      "unit": "each",
+      "rate": 2000.0,
+      "low": 1800.0,
+      "high": 3500.0,
+      "source": "Heatable / BestBuilders 2026"
+    },
+    {
+      "category": "Material",
+      "item": "System boiler + cylinder upgrade",
+      "unit": "each",
+      "rate": 4200.0,
+      "low": 3800.0,
+      "high": 5500.0,
+      "source": "BestBuilders 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Hot water cylinder (unvented, supply+fit)",
+      "unit": "each",
+      "rate": 1200.0,
+      "low": 900.0,
+      "high": 1800.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Material",
+      "item": "Power flush + magnetic filter",
+      "unit": "each",
+      "rate": 500.0,
+      "low": 350.0,
+      "high": 650.0,
+      "source": "BestBuilders 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Heating controls / smart thermostat",
+      "unit": "each",
+      "rate": 280.0,
+      "low": 200.0,
+      "high": 350.0,
+      "source": "TailoredQuote 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Gas pipe upgrade (15-22mm)",
+      "unit": "each",
+      "rate": 200.0,
+      "low": 100.0,
+      "high": 300.0,
+      "source": "TailoredQuote 2026"
+    },
+    {
+      "category": "Material",
+      "item": "Wet underfloor heating (per m2, supply+fit)",
+      "unit": "per m2",
+      "rate": 100.0,
+      "low": 80.0,
+      "high": 150.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Material",
+      "item": "Gas Safe commissioning / Benchmark cert",
+      "unit": "each",
+      "rate": 90.0,
+      "low": 60.0,
+      "high": 150.0,
+      "source": "Estimate - verify"
+    },
+    {
+      "category": "Waste",
+      "item": "Mini skip (2-yard)",
+      "unit": "each",
+      "rate": 130.0,
+      "low": 110.0,
+      "high": 160.0,
+      "source": "WeClearJunk / SkipHireCost 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Midi skip (4-yard)",
+      "unit": "each",
+      "rate": 200.0,
+      "low": 160.0,
+      "high": 260.0,
+      "source": "Checkatrade 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Builder skip (6-yard)",
+      "unit": "each",
+      "rate": 260.0,
+      "low": 220.0,
+      "high": 320.0,
+      "source": "BestBuilders 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Builder skip (8-yard)",
+      "unit": "each",
+      "rate": 330.0,
+      "low": 280.0,
+      "high": 420.0,
+      "source": "BestBuilders 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Maxi skip (12-yard)",
+      "unit": "each",
+      "rate": 420.0,
+      "low": 350.0,
+      "high": 600.0,
+      "source": "RCollard 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Roll-on/roll-off (20-yard)",
+      "unit": "each",
+      "rate": 550.0,
+      "low": 400.0,
+      "high": 700.0,
+      "source": "RCollard 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Roll-on/roll-off (40-yard)",
+      "unit": "each",
+      "rate": 850.0,
+      "low": 600.0,
+      "high": 1100.0,
+      "source": "RCollard 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Grab lorry (4-wheel, 7-9t)",
+      "unit": "per load",
+      "rate": 250.0,
+      "low": 170.0,
+      "high": 380.0,
+      "source": "PremierGrab 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Grab lorry (6-wheel, 12-14t)",
+      "unit": "per load",
+      "rate": 295.0,
+      "low": 190.0,
+      "high": 400.0,
+      "source": "PremierGrab 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Grab lorry (8-wheel, 16-18t)",
+      "unit": "per load",
+      "rate": 340.0,
+      "low": 260.0,
+      "high": 420.0,
+      "source": "PremierGrab 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Muck-away (per m3, general spoil)",
+      "unit": "per m3",
+      "rate": 110.0,
+      "low": 85.0,
+      "high": 125.0,
+      "source": "MyBuilder 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Council skip permit / licence",
+      "unit": "each",
+      "rate": 60.0,
+      "low": 15.0,
+      "high": 180.0,
+      "source": "AMA/TWG 2026 (London higher)"
+    },
+    {
+      "category": "Waste",
+      "item": "Wait-and-load skip (no permit)",
+      "unit": "each",
+      "rate": 50.0,
+      "low": 40.0,
+      "high": 80.0,
+      "source": "SkipHireCost 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Heavy waste surcharge (soil/rubble)",
+      "unit": "each",
+      "rate": 40.0,
+      "low": 30.0,
+      "high": 60.0,
+      "source": "SkipHireCost 2026"
+    },
+    {
+      "category": "Waste",
+      "item": "Skip lights / cones",
+      "unit": "each",
+      "rate": 15.0,
+      "low": 10.0,
+      "high": 30.0,
+      "source": "Estimate - often included"
+    }
+  ],
+  "benchmarks": {
+    "Single-storey rear extension": {
+      "Budget": [
+        1500.0,
+        1900.0
+      ],
+      "Standard": [
+        1900.0,
+        2400.0
+      ],
+      "Premium": [
+        2400.0,
+        3000.0
+      ],
+      "notes": "Full build, excl. kitchen/bathroom fit-out"
+    },
+    "Side return extension": {
+      "Budget": [
+        1700.0,
+        2100.0
+      ],
+      "Standard": [
+        2100.0,
+        2600.0
+      ],
+      "Premium": [
+        2600.0,
+        3300.0
+      ],
+      "notes": "Tighter access; full build"
+    },
+    "Wrap-around extension": {
+      "Budget": [
+        1700.0,
+        2100.0
+      ],
+      "Standard": [
+        2100.0,
+        2600.0
+      ],
+      "Premium": [
+        2600.0,
+        3300.0
+      ],
+      "notes": "Full build"
+    },
+    "Kitchen extension (build only)": {
+      "Budget": [
+        1500.0,
+        1900.0
+      ],
+      "Standard": [
+        1900.0,
+        2400.0
+      ],
+      "Premium": [
+        2400.0,
+        3000.0
+      ],
+      "notes": "Excl. units / appliances"
+    },
+    "Double-storey extension": {
+      "Budget": [
+        1400.0,
+        1800.0
+      ],
+      "Standard": [
+        1800.0,
+        2300.0
+      ],
+      "Premium": [
+        2300.0,
+        2800.0
+      ],
+      "notes": "Cheaper per m2 (shared roof/foundations)"
+    },
+    "Loft - rooflight / Velux": {
+      "Budget": [
+        1000.0,
+        1300.0
+      ],
+      "Standard": [
+        1300.0,
+        1600.0
+      ],
+      "Premium": [
+        1600.0,
+        2000.0
+      ],
+      "notes": "Minimal structural change"
+    },
+    "Loft - dormer": {
+      "Budget": [
+        1300.0,
+        1600.0
+      ],
+      "Standard": [
+        1600.0,
+        2000.0
+      ],
+      "Premium": [
+        2000.0,
+        2500.0
+      ],
+      "notes": "Rear box dormer"
+    },
+    "Loft - hip-to-gable (+dormer)": {
+      "Budget": [
+        1500.0,
+        1900.0
+      ],
+      "Standard": [
+        1900.0,
+        2300.0
+      ],
+      "Premium": [
+        2300.0,
+        2800.0
+      ],
+      "notes": "More steelwork"
+    },
+    "Loft - mansard": {
+      "Budget": [
+        1800.0,
+        2200.0
+      ],
+      "Standard": [
+        2200.0,
+        2700.0
+      ],
+      "Premium": [
+        2700.0,
+        3300.0
+      ],
+      "notes": "Most structural work; usually needs planning"
+    },
+    "Garden room / outbuilding": {
+      "Budget": [
+        1200.0,
+        1600.0
+      ],
+      "Standard": [
+        1600.0,
+        2100.0
+      ],
+      "Premium": [
+        2100.0,
+        2800.0
+      ],
+      "notes": "Year-round spec; excl. foundations (price on Groundworks tab)"
+    },
+    "Kitchen refurbishment": {
+      "Budget": [
+        450.0,
+        700.0
+      ],
+      "Standard": [
+        700.0,
+        1200.0
+      ],
+      "Premium": [
+        1200.0,
+        2000.0
+      ],
+      "notes": "Fitting-led - per-m² is rough; use Detailed Estimate. Excl. premium appliances"
+    },
+    "Bathroom refurbishment": {
+      "Budget": [
+        600.0,
+        1000.0
+      ],
+      "Standard": [
+        1000.0,
+        1600.0
+      ],
+      "Premium": [
+        1600.0,
+        2800.0
+      ],
+      "notes": "Fitting-led - per-m² is rough; use Detailed Estimate"
+    }
+  },
+  "fees": [
+    {
+      "item": "Structural engineer - extension calcs",
+      "low": 550.0,
+      "high": 1500.0,
+      "unit": "per project",
+      "source": "StructuralEngineerCalcs 2026"
+    },
+    {
+      "item": "Structural engineer - single RSJ / beam",
+      "low": 450.0,
+      "high": 600.0,
+      "unit": "per beam",
+      "source": "SimplifyStructures 2026"
+    },
+    {
+      "item": "Architect / drawings (fixed)",
+      "low": 1500.0,
+      "high": 4500.0,
+      "unit": "per project",
+      "source": "Typical; or 7-15% of build value"
+    },
+    {
+      "item": "Building Control - extension (full plans)",
+      "low": 600.0,
+      "high": 1200.0,
+      "unit": "per project",
+      "source": "Estimate - verify with LABC / AI"
+    },
+    {
+      "item": "Building Control - loft",
+      "low": 500.0,
+      "high": 900.0,
+      "unit": "per project",
+      "source": "Estimate - verify"
+    },
+    {
+      "item": "Planning application - householder fee",
+      "low": 258.0,
+      "high": 258.0,
+      "unit": "statutory",
+      "source": "Estimate - verify current gov.uk fee"
+    },
+    {
+      "item": "Party wall agreement",
+      "low": 1000.0,
+      "high": 2500.0,
+      "unit": "per neighbour",
+      "source": "StructuralEngineerCalcs 2026"
+    },
+    {
+      "item": "Scaffolding - single elevation",
+      "low": 300.0,
+      "high": 500.0,
+      "unit": "per week",
+      "source": "RSJ.info 2026 (tower)"
+    },
+    {
+      "item": "Scaffolding - full bridge / access",
+      "low": 800.0,
+      "high": 1500.0,
+      "unit": "per week",
+      "source": "RSJ.info 2026"
+    },
+    {
+      "item": "Crane hire (small mobile, half day)",
+      "low": 400.0,
+      "high": 800.0,
+      "unit": "each",
+      "source": "RSJ.info 2026"
+    },
+    {
+      "item": "Steel beam install - all-in (typical)",
+      "low": 1800.0,
+      "high": 4500.0,
+      "unit": "per beam",
+      "source": "BookaBuilderUK 2026"
+    },
+    {
+      "item": "RSJ install - simple internal opening",
+      "low": 1800.0,
+      "high": 3400.0,
+      "unit": "per beam",
+      "source": "BookaBuilderUK 2026"
+    },
+    {
+      "item": "Acrow props / strongboys / padstones",
+      "low": 100.0,
+      "high": 200.0,
+      "unit": "per beam",
+      "source": "MyBuilder 2026"
+    },
+    {
+      "item": "Beam delivery",
+      "low": 50.0,
+      "high": 150.0,
+      "unit": "per beam",
+      "source": "MyBuilder 2026"
+    },
+    {
+      "item": "Welfare / temp toilet hire",
+      "low": 25.0,
+      "high": 40.0,
+      "unit": "per week",
+      "source": "Estimate - verify"
+    },
+    {
+      "item": "Trench-fill foundation (excavator)",
+      "low": 130.0,
+      "high": 200.0,
+      "unit": "per lin m",
+      "source": "Checkatrade / Concretemath 2026"
+    },
+    {
+      "item": "Strip foundation (excavator)",
+      "low": 100.0,
+      "high": 130.0,
+      "unit": "per lin m",
+      "source": "Checkatrade 2026"
+    },
+    {
+      "item": "Deep trench fill near trees (1.5-3m)",
+      "low": 200.0,
+      "high": 350.0,
+      "unit": "per lin m",
+      "source": "Estimate - clay / tree dig"
+    },
+    {
+      "item": "Excavation + muck-away",
+      "low": 85.0,
+      "high": 125.0,
+      "unit": "per m3",
+      "source": "MyBuilder 2026"
+    },
+    {
+      "item": "Concrete pump hire",
+      "low": 275.0,
+      "high": 800.0,
+      "unit": "per pour",
+      "source": "Concretemath 2026"
+    },
+    {
+      "item": "Small-load concrete surcharge",
+      "low": 40.0,
+      "high": 80.0,
+      "unit": "per load",
+      "source": "Mixdesigncalc 2026"
+    }
+  ],
+  "roofs": {
+    "Flat / lean-to (baseline)": [
+      0.0,
+      0.0
+    ],
+    "Pitched - tiled": [
+      200.0,
+      350.0
+    ],
+    "Pitched - slate / complex": [
+      300.0,
+      500.0
+    ]
+  },
+  "roofCoverings": {
+    "EPDM rubber (flat)": {
+      "low": 40.0,
+      "high": 70.0,
+      "notes": "25-50 yr life"
+    },
+    "GRP fibreglass (flat)": {
+      "low": 50.0,
+      "high": 80.0,
+      "notes": "Seamless, no joints"
+    },
+    "Felt torch-on (flat)": {
+      "low": 30.0,
+      "high": 55.0,
+      "notes": "Cheapest, 10-15 yr"
+    },
+    "Concrete tiles (pitched)": {
+      "low": 50.0,
+      "high": 120.0,
+      "notes": "Labour + materials"
+    },
+    "Natural slate (pitched)": {
+      "low": 120.0,
+      "high": 275.0,
+      "notes": "Premium / heritage"
+    }
+  },
+  "plantHire": [
+    {
+      "item": "Mini excavator 1.5t (self-drive)",
+      "day": 75.0,
+      "week": 300.0,
+      "notes": "+ delivery & fuel"
+    },
+    {
+      "item": "3t excavator (self-drive)",
+      "day": 100.0,
+      "week": 400.0,
+      "notes": "+ delivery & fuel"
+    },
+    {
+      "item": "Excavator + operator (1.5-3t)",
+      "day": 350.0,
+      "week": 1500.0,
+      "notes": "Operated; £300-500/day"
+    },
+    {
+      "item": "Tracked dumper 1t",
+      "day": 70.0,
+      "week": 220.0,
+      "notes": "+ delivery & fuel"
+    },
+    {
+      "item": "Dumper 3t (wheeled)",
+      "day": 90.0,
+      "week": 320.0,
+      "notes": "+ delivery & fuel"
+    },
+    {
+      "item": "Telehandler (7m)",
+      "day": 120.0,
+      "week": 450.0,
+      "notes": "+ delivery & fuel"
+    },
+    {
+      "item": "Cement mixer (diesel/electric)",
+      "day": 30.0,
+      "week": 100.0,
+      "notes": null
+    },
+    {
+      "item": "Wacker plate / compactor",
+      "day": 35.0,
+      "week": 110.0,
+      "notes": null
+    },
+    {
+      "item": "Trench rammer",
+      "day": 45.0,
+      "week": 140.0,
+      "notes": null
+    },
+    {
+      "item": "Concrete breaker (electric)",
+      "day": 35.0,
+      "week": 110.0,
+      "notes": "+ points/steels"
+    },
+    {
+      "item": "Hydraulic breaker (digger attachment)",
+      "day": 60.0,
+      "week": 200.0,
+      "notes": null
+    },
+    {
+      "item": "Petrol disc cutter / consaw",
+      "day": 30.0,
+      "week": 100.0,
+      "notes": "+ blades"
+    },
+    {
+      "item": "Generator (3.5kVA)",
+      "day": 35.0,
+      "week": 110.0,
+      "notes": "+ fuel"
+    },
+    {
+      "item": "Scaffold tower (alloy 4-6m)",
+      "day": 40.0,
+      "week": 120.0,
+      "notes": null
+    },
+    {
+      "item": "Scissor lift (electric ~8m)",
+      "day": 90.0,
+      "week": 300.0,
+      "notes": "+ delivery"
+    },
+    {
+      "item": "Pressure washer",
+      "day": 30.0,
+      "week": 90.0,
+      "notes": null
+    }
+  ]
+}
