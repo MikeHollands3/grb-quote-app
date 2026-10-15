@@ -266,7 +266,7 @@
   },
   "plant": {
     "include": true,
-    "delivery": 150,
+    "delivery": 100,
     "lines": [
       {
         "item": "Mini excavator 1.5t (self-drive)",
@@ -369,15 +369,12 @@
     {
       "description": "Building Control - extension (full plans)",
       "amount": 900
-    },
-    {
-      "description": "Sundries / consumables",
-      "amount": 500
     }
   ],
   "accessPct": 0.1,
   "drawingsConfirmed": false,
   "contingencyPct": 0.12,
   "markupPct": 0.2,
-  "subcontractFeePct": 0.2
+  "subcontractFeePct": 0.2,
+  "sundries": 500
 }

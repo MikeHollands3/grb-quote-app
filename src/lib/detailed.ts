@@ -44,6 +44,8 @@ export interface DetailedInput {
   area: number
   labour: QtyLine[]
   materials: QtyLine[]
+  /** Sundries / consumables allowance (£, not uplifted) — counted as materials. */
+  sundries: number
   footings: {
     include: boolean
     length: number
@@ -205,7 +207,7 @@ export function computeDetailed(input: DetailedInput, lib: RateLibrary, s: Setti
   const labour = priceLines(input.labour, lib, mult)
   const materials = priceLines(input.materials, lib, mult)
   const labourTotal = sum(labour.map((l) => l.cost))
-  const materialsTotal = sum(materials.map((l) => l.cost))
+  const materialsTotal = sum(materials.map((l) => l.cost)) + n(input.sundries)
 
   const footings = footingsCost(input.footings, lib, mult)
   const roof = roofCost(input.roof, lib, mult)

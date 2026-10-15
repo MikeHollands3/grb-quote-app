@@ -16,7 +16,8 @@ describe('computeDetailed — line items and feeder tabs reconcile to the workbo
     expect(r.labour[0].rate).toBeCloseTo(294.58, 2)
     expect(r.labour[0].cost).toBeCloseTo(10310.3, 2)
     expect(r.labourTotal).toBeCloseTo(21343.66, 2)
-    expect(r.materialsTotal).toBeCloseTo(5567.562, 2)
+    expect(r.materials.reduce((a, l) => a + l.cost, 0)).toBeCloseTo(5567.562, 2)
+    expect(r.materialsTotal).toBeCloseTo(5567.562 + 500, 2) // + sundries, moved from fees
   })
 
   it('feeder tabs', () => {
@@ -31,22 +32,23 @@ describe('computeDetailed — line items and feeder tabs reconcile to the workbo
     expect(r.electrical.roomsTotal).toBeCloseTo(8341.97, 2)
     expect(r.electrical.total).toBeCloseTo(10551.32, 2)
     expect(r.plumbing.total).toBeCloseTo(7351.11, 2)
-    expect(r.plant.total).toBe(1220)
+    // Workbook: 1220. Now uses D&S Surfacing invoice rates (dumper £165/wk) and £100 delivery + collection.
+    expect(r.plant.total).toBe(300 + 165 + 110 + 2 * 100 + 2 * 120 + 100)
     expect(r.waste.total).toBe(330)
   })
 
-  it('section 3 total matches the workbook', () => {
-    expect(r.feesTotal).toBeCloseTo(31333.4525, 2)
+  it('section 3 total: workbook figure less sundries (now materials) and the plant changes', () => {
+    expect(r.feesTotal).toBeCloseTo(31333.4525 - 500 - (1220 - 1115), 2)
   })
 })
 
 describe('computeDetailed — GRB price build-up on the workbook example', () => {
   // Built from the workbook's own feeder values so each step is traceable.
-  const lm = 21343.66 + 5567.562
+  const lm = 21343.66 + 5567.562 + 500 // + sundries
   const access = lm * 0.1 // 2691.1222
   const footings = 5794.5225
   const subbed = 4686.5 + 10551.32 + 7351.11 // roof + electrics + plumbing
-  const atCost = 1220 + 330 + 1400 // plant + waste + other fees
+  const atCost = 1115 + 330 + 900 // plant + waste + Building Control
   const direct = lm + access + footings
   const contingency = direct * 0.12
   const markup = (direct + contingency) * 0.2
@@ -105,14 +107,14 @@ describe('computeDetailed — switches and edge cases', () => {
     const input = example()
     for (const k of ['footings', 'roof', 'electrical', 'plumbing', 'plant', 'waste'] as const) input[k].include = false
     const r = computeDetailed(input, lib, settings)
-    expect(r.feesTotal).toBe(1400)
+    expect(r.feesTotal).toBe(900)
     expect(r.footingsInHouse).toBe(0)
     expect(r.subcontractBase).toBe(0)
   })
 
   it('plant and waste are not uplifted', () => {
     const r = computeDetailed(example(), lib, { ...settings, uplift: 2 })
-    expect(r.plant.total).toBe(1220)
+    expect(r.plant.total).toBe(1115)
     expect(r.waste.total).toBe(330)
   })
 

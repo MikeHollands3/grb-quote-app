@@ -1438,6 +1438,12 @@
   },
   "plantHire": [
     {
+      "item": "Micro excavator 1t (self-drive)",
+      "day": 50.0,
+      "week": 250.0,
+      "notes": "D&S Surfacing inv 94346, Jul 2026 (Bobcat E10Z); + delivery & fuel"
+    },
+    {
       "item": "Mini excavator 1.5t (self-drive)",
       "day": 75.0,
       "week": 300.0,
@@ -1445,9 +1451,9 @@
     },
     {
       "item": "3t excavator (self-drive)",
-      "day": 100.0,
-      "week": 400.0,
-      "notes": "+ delivery & fuel"
+      "day": 64.0,
+      "week": 320.0,
+      "notes": "D&S Surfacing inv 95129, Aug 2026 (Hitachi ZX26U); + delivery & diesel"
     },
     {
       "item": "Excavator + operator (1.5-3t)",
@@ -1457,9 +1463,9 @@
     },
     {
       "item": "Tracked dumper 1t",
-      "day": 70.0,
-      "week": 220.0,
-      "notes": "+ delivery & fuel"
+      "day": 33.0,
+      "week": 165.0,
+      "notes": "D&S Surfacing inv 94346, Jul 2026 (Hinowa HS701); + delivery & fuel"
     },
     {
       "item": "Dumper 3t (wheeled)",

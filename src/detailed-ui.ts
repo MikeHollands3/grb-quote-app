@@ -30,6 +30,7 @@ function blankState(): State {
   i.area = 0
   i.labour = [{ item: '', qty: 0 }]
   i.materials = [{ item: '', qty: 0 }]
+  i.sundries = 0
   i.footings.length = 0
   i.roof.area = 0
   i.electrical.rooms = []
@@ -171,7 +172,8 @@ function view(s: State) {
   <div class="card lines">${itemRows('labour', s)}<button type="button" class="add" data-add="labour">+ Add labour</button></div>
 
   <h2>2. Materials <span class="h-total">${out('materialsTotal')}</span></h2>
-  <div class="card lines">${itemRows('materials', s)}<button type="button" class="add" data-add="materials">+ Add material</button></div>
+  <div class="card lines">${itemRows('materials', s)}<button type="button" class="add" data-add="materials">+ Add material</button>
+    ${field('Sundries / consumables £', num('input.sundries', i.sundries ?? 0), 'Lump-sum allowance; counts as materials')}</div>
 
   <h2>3. Subcontract, fees &amp; preliminaries <span class="h-total">${out('feesTotal')}</span></h2>
   <div class="pkgs">
