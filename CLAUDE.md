@@ -50,7 +50,8 @@ Improvements". Keep the light/dark token system in `src/styles.css`. Drop the re
 4. **Saved quotes (done)** — IndexedDB per device (`src/lib/saved.ts`, Saved tab), export/import JSON, and
    upload to a "GRB Quotes" Google Drive folder (`src/lib/drive.ts`, `src/drive-sync.ts`; browser-only Google
    sign-in, `drive.file` scope, GRB Workspace accounts only — setup in `docs/google-drive-setup.md`).
-5. **Deploy** — static host (Cloudflare Pages / Vercel), HTTPS, custom subdomain.
+5. **Deploy** — Cloudflare Pages from GitHub (`main` → production), custom domain app.grbhomeimprovements.co.uk
+   (CNAME in Squarespace DNS). Build `npm run build` → `dist`; Node from `.nvmrc`; headers in `public/_headers`.
 6. **Jobs & money in (part 1 done)** — "Won → job" on a quote (`src/job-from-quote.ts`): start date, stage programme
    with who (team + subbies by name, `src/lib/jobs.ts`), one invoice per payment (deposit on acceptance, weekly
    invoices each programme Monday, due after `termsDays`). Jobs and Money tabs. Still to do: (2) a shared

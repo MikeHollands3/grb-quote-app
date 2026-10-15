@@ -19,7 +19,15 @@ npm run preview    # preview the built app
 See [docs/google-drive-setup.md](docs/google-drive-setup.md) — needs `VITE_GOOGLE_CLIENT_ID` from the GRB Workspace's Google Cloud project.
 
 ## Deploy
-`dist/` is a static bundle. Host anywhere static: Cloudflare Pages, Vercel, Netlify, or a folder behind nginx. HTTPS is required for the service worker / install.
+Hosted on **Cloudflare Pages**, connected to this GitHub repo: every push to `main` builds and goes live;
+other branches get preview URLs.
+
+- Build command `npm run build`, output directory `dist`, Node version from `.nvmrc` (22).
+- Custom domain `app.grbhomeimprovements.co.uk` — a CNAME record for `app` in Squarespace DNS pointing at the
+  project's `*.pages.dev` address.
+- Environment variable `VITE_GOOGLE_CLIENT_ID` (Production and Preview) once the Google project exists — see
+  `docs/google-drive-setup.md`. Changing it needs a redeploy.
+- `public/_headers` keeps the service worker uncached so installed apps update promptly.
 
 ## Data
 All rates live in `src/data/rates.json` — benchmarks (£/m² by job + spec), regional multipliers, roof adders, VAT. Regenerate from the Excel master when rates change (see CLAUDE.md).
