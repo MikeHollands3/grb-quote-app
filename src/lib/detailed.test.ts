@@ -6,11 +6,13 @@ import type { RateLibrary } from './types'
 
 const lib = libData as unknown as RateLibrary
 const example = () => structuredClone(exampleData) as DetailedInput
+// The workbook example uses 20% contingency; the app defaults to 12% pre-drawings.
+const workbookExample = () => ({ ...example(), contingencyPct: 0.2 })
 // London (+30%) × 3% inflation, VAT registered — the workbook's Start Here settings.
 const settings: Settings = { uplift: 1.3 * 1.03, vatRegistered: true, vat: 0.2 }
 
 describe('computeDetailed — reconciles to the workbook example (30 Clowders Road)', () => {
-  const r = computeDetailed(example(), lib, settings)
+  const r = computeDetailed(workbookExample(), lib, settings)
 
   it('labour and materials', () => {
     expect(r.labour[0].rate).toBeCloseTo(294.58, 2)
@@ -56,6 +58,11 @@ describe('computeDetailed — reconciles to the workbook example (30 Clowders Ro
 })
 
 describe('computeDetailed — switches and edge cases', () => {
+  it('defaults to 12% pre-drawings contingency', () => {
+    const r = computeDetailed(example(), lib, settings)
+    expect(r.contingency).toBeCloseTo(29602.3442 * 0.12, 2)
+  })
+
   it('charges the skip permit only when the skip is on the highway', () => {
     const input = example()
     input.waste.onHighway = true

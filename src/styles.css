@@ -151,3 +151,4 @@ dl.calc dd{margin:0;text-align:right;font-weight:700;font-variant-numeric:tabula
 #detailed[hidden] .totalbar{display:none}
 details.margin{margin-top:.8rem}
 .room input[type=text]{font-size:.8rem;padding-inline:.45rem}
+.bu-note{margin-top:-.2rem}.bu-note .check{font-size:.78rem;font-weight:500;color:var(--muted)}

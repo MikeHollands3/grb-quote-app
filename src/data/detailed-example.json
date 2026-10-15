@@ -376,7 +376,8 @@
     }
   ],
   "accessPct": 0.1,
-  "contingencyPct": 0.2,
+  "drawingsConfirmed": false,
+  "contingencyPct": 0.12,
   "markupPct": 0.2,
   "subcontractFeePct": 0.2
 }

@@ -72,6 +72,8 @@ export interface DetailedInput {
   waste: { include: boolean; lines: QtyLine[]; onHighway: boolean }
   fees: FeeLine[]
   accessPct: number
+  /** Drawings + spec confirmed: contingency drops from 12% to 8% (the UI sets contingencyPct). */
+  drawingsConfirmed: boolean
   contingencyPct: number
   markupPct: number
   subcontractFeePct: number
@@ -91,6 +93,8 @@ export interface PricedLine {
   rate: number
   cost: number
 }
+
+export const CONTINGENCY = { preDrawings: 0.12, confirmed: 0.08 } as const
 
 export const PERMIT_ITEM = 'Council skip permit / licence'
 export const CONCRETE_ITEM = 'Ready-mix concrete (C25-C35)'

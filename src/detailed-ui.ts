@@ -1,7 +1,7 @@
 import libData from './data/rate-library.json'
 import ratesData from './data/rates.json'
 import exampleData from './data/detailed-example.json'
-import { computeDetailed, PERMIT_ITEM, type DetailedInput, type DetailedResult } from './lib/detailed'
+import { computeDetailed, CONTINGENCY, PERMIT_ITEM, type DetailedInput, type DetailedResult } from './lib/detailed'
 import { gbp, uplift } from './lib/pricing'
 import type { RateLibrary, Rates } from './lib/types'
 
@@ -271,6 +271,7 @@ function view(s: State) {
     <div class="bu"><span>Restricted access / double handling</span>${pctInput('input.accessPct', i.accessPct, 'Access uplift percent')}${out('access')}</div>
     <div class="bu strong"><span>Direct works</span>${out('direct')}</div>
     <div class="bu"><span>Contingency on direct works</span>${pctInput('input.contingencyPct', i.contingencyPct, 'Contingency percent')}${out('contingency')}</div>
+    <div class="bu-note">${check('input.drawingsConfirmed', !!i.drawingsConfirmed, 'Drawings &amp; spec confirmed (12% → 8%)')}</div>
     <div class="bu"><span>Overhead &amp; profit on direct works</span>${pctInput('input.markupPct', i.markupPct, 'Markup percent')}${out('markup')}</div>
     <div class="bu"><span>Subcontract packages + mgmt fee</span>${pctInput('input.subcontractFeePct', i.subcontractFeePct, 'Management fee percent')}${out('subcontract')}</div>
     <div class="bu strong"><span>Net price (ex VAT)</span>${out('net')}</div>
@@ -408,6 +409,12 @@ export function mountDetailed(root: HTMLElement) {
         value = el.value
     }
     setAt(state, full, value)
+    if (full === 'input.drawingsConfirmed') {
+      state.input.contingencyPct = value ? CONTINGENCY.confirmed : CONTINGENCY.preDrawings
+      save(state)
+      render()
+      return
+    }
     save(state)
     update()
   })
