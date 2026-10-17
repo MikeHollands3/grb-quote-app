@@ -14,6 +14,7 @@ import { jobsChanged, listJobs, onJobsChanged, putJob } from './lib/jobs-store'
 import { getQuote } from './lib/saved'
 import type { SavedQuote } from './lib/saved'
 import { HELP_HTML } from './help'
+import { createTakeoffClient } from './takeoff-client'
 
 const rates = ratesData as unknown as Rates
 
@@ -181,9 +182,11 @@ function driveBadge(q: SavedQuote): string {
   return q.drive?.status === 'synced' ? 'On Drive ✓' : q.drive?.status === 'error' ? 'Upload failed' : 'Waiting to upload'
 }
 
+const takeoff = createTakeoffClient(drive)
 const detailed = mountDetailed(document.getElementById('detailed')!, {
   beforeSave: () => drive.beforeSave(),
   onSaved: () => drive.afterSave(),
+  readDrawings: (files, notes) => takeoff.read(files, notes),
 })
 // quoteId -> jobId, for the Won / View job buttons on the Quotes tab
 let jobByQuote = new Map<string, string>()

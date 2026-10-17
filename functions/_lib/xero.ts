@@ -54,7 +54,7 @@ interface Connection {
  * tokeninfo proves which app it was issued to, and Drive's about.get (allowed by drive.file)
  * says whose it is.
  */
-export async function verifyGoogle(req: Request, env: Env, f: Fetch = fetch): Promise<string> {
+export async function verifyGoogle(req: Request, env: Pick<Env, 'GOOGLE_CLIENT_ID'>, f: Fetch = fetch): Promise<string> {
   const token = req.headers.get('Authorization')?.replace(/^Bearer\s+/i, '')
   if (!token) throw new HttpError(401, 'Sign in with Google first.')
   const res = await f(`https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(token)}`)
@@ -65,7 +65,7 @@ export async function verifyGoogle(req: Request, env: Env, f: Fetch = fetch): Pr
   const who = await f('https://www.googleapis.com/drive/v3/about?fields=user(emailAddress)', { headers: { Authorization: `Bearer ${token}` } })
   if (!who.ok) throw new HttpError(401, 'Google sign-in has expired — sign in again.')
   const email = (((await who.json()) as { user?: { emailAddress?: string } }).user?.emailAddress ?? '').toLowerCase()
-  if (!email.endsWith(`@${HOSTED_DOMAIN}`)) throw new HttpError(403, `Only @${HOSTED_DOMAIN} accounts can use Xero from the app (signed in as ${email || 'unknown'}).`)
+  if (!email.endsWith(`@${HOSTED_DOMAIN}`)) throw new HttpError(403, `Only @${HOSTED_DOMAIN} accounts can use this from the app (signed in as ${email || 'unknown'}).`)
   return email
 }
 

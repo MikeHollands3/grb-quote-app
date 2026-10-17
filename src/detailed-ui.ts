@@ -9,6 +9,7 @@ import { computeDetailed, CONTINGENCY, PERMIT_ITEM, type DetailedInput, type Det
 import { gbp, uplift } from './lib/pricing'
 import { paymentSchedule } from './lib/schedule'
 import type { RateLibrary, Rates } from './lib/types'
+import { applyTakeoff, type Takeoff } from './lib/takeoff'
 
 const lib = libData as unknown as RateLibrary
 const rates = ratesData as unknown as Rates
@@ -170,6 +171,31 @@ function pkg(key: string, title: string, body: string, s: State) {
     </details>`
 }
 
+function takeoffView(s: State) {
+  const t = s.takeoff
+  const list = (items: string[]) => (items.length ? `<ul>${items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '<p class="hint">None.</p>')
+  const read = t
+    ? `<div class="card takeoff-notes">
+    <h3>Draft from drawings · ${esc(new Date(t.readAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }))}</h3>
+    <p>${esc(t.summary)}</p>
+    <p class="hint">Read from ${esc(t.files.join(', '))}. Check every line before quoting.</p>
+    <details data-note="t-questions"><summary>Check on site (${t.questions.length})</summary>${list(t.questions)}</details>
+    <details data-note="t-assumptions"><summary>Assumptions (${t.assumptions.length})</summary>${list(t.assumptions)}</details>
+    <details data-note="t-measurements"><summary>Measurements (${t.measurements.length})</summary>${list(t.measurements.map((m) => `${m.what}: ${m.quantity} ${m.unit} — ${m.source}`))}</details>
+    <button type="button" class="ghost small" data-action="takeoff-hide">Hide these notes</button>
+  </div>`
+    : ''
+  return `<div class="card takeoff">
+    <h3>Price from drawings</h3>
+    <p class="hint">Choose the architect's drawings (PDF or photos). Claude reads them and fills in a draft estimate below for you to check. Needs signal; takes a minute or two.</p>
+    <input type="file" accept="application/pdf,image/*" multiple data-takeoff="files" aria-label="Drawings">
+    <textarea rows="2" data-takeoff="notes" placeholder="Anything not on the drawings: spec level, what the client supplies, access…" aria-label="Notes for the drawings reader"></textarea>
+    <button type="button" class="primary" data-action="takeoff">Read drawings</button>
+    <p class="hint" data-takeoff="status"></p>
+  </div>
+  ${read}`
+}
+
 function view(s: State) {
   const i = s.input
   const plantNames = lib.plantHire.map((p) => p.item)
@@ -180,6 +206,8 @@ function view(s: State) {
   </div>
   <h1>Detailed estimate</h1>
   <p class="lede">Build a priced quote from labour days, materials and subcontract packages. Rates come from the rate library with the region and ${Math.round(rates.inflation * 100)}% inflation uplift. Footings are priced as in-house work, roof, electrics and plumbing as subcontracted, and plant, skips and fees at cost.</p>
+
+  ${takeoffView(s)}
 
   <div class="card">
     ${field('Job ref / client', text('input.jobRef', i.jobRef, 'placeholder="e.g. 30 Clowders Road"'))}
@@ -437,6 +465,8 @@ export interface DetailedOptions {
   onSaved?: (q: SavedQuote) => void
   /** Called synchronously at the start of a Save / PDF tap (e.g. to re-authorise Drive inside the gesture). */
   beforeSave?: () => void
+  /** Reads drawings into a takeoff (online). Called from the click so it can sign in to Google. */
+  readDrawings?: (files: File[], notes: string) => Promise<Takeoff>
 }
 
 export function mountDetailed(root: HTMLElement, opts: DetailedOptions = {}) {
@@ -505,10 +535,10 @@ export function mountDetailed(root: HTMLElement, opts: DetailedOptions = {}) {
   }
 
   const render = () => {
-    const open = new Set([...root.querySelectorAll<HTMLDetailsElement>('details[open]')].map((d) => d.dataset.pkg ?? 'margin'))
+    const open = new Set([...root.querySelectorAll<HTMLDetailsElement>('details[open]')].map((d) => d.dataset.pkg ?? d.dataset.note ?? 'margin'))
     root.innerHTML = view(state)
     root.querySelectorAll<HTMLDetailsElement>('details').forEach((d) => {
-      if (open.has(d.dataset.pkg ?? 'margin')) d.open = true
+      if (open.has(d.dataset.pkg ?? d.dataset.note ?? 'margin')) d.open = true
     })
     update()
   }
@@ -574,6 +604,11 @@ export function mountDetailed(root: HTMLElement, opts: DetailedOptions = {}) {
       opts.beforeSave?.()
       void createPdf(btn)
       return
+    } else if (btn.dataset.action === 'takeoff') {
+      void readDrawings(btn)
+      return
+    } else if (btn.dataset.action === 'takeoff-hide') {
+      delete state.takeoff
     } else if (btn.dataset.action === 'clear') {
       if (!confirm('Clear this estimate and start blank?')) return
       state = blankState()
@@ -582,6 +617,62 @@ export function mountDetailed(root: HTMLElement, opts: DetailedOptions = {}) {
     save(state)
     render()
   })
+
+  let reading = false
+  const readDrawings = async (btn: HTMLButtonElement) => {
+    const status = () => root.querySelector<HTMLElement>('[data-takeoff="status"]')
+    const say = (msg: string) => {
+      const el = status()
+      if (el) el.textContent = msg
+    }
+    if (reading || !opts.readDrawings) return
+    const files = [...(root.querySelector<HTMLInputElement>('[data-takeoff="files"]')?.files ?? [])]
+    const notes = root.querySelector<HTMLTextAreaElement>('[data-takeoff="notes"]')?.value ?? ''
+    const pending = opts.readDrawings(files, notes) // first, inside the tap, in case Google sign-in is needed
+    reading = true
+    btn.disabled = true
+    say(`Reading ${files.length} drawing${files.length === 1 ? '' : 's'}… this takes a minute or two. Keep the app open.`)
+    try {
+      const t = await pending
+      const hasWork = priceOf(state).total > 0
+      if (hasWork && !confirm('Replace the current estimate with the draft from the drawings? Save it first if you want to keep it.')) {
+        say('Draft not applied.')
+        return
+      }
+      const fresh = blankState()
+      fresh.region = state.region
+      fresh.input = applyTakeoff(fresh.input, t, lib)
+      fresh.quote = {
+        ...fresh.quote,
+        clientName: t.clientName,
+        clientAddress: t.siteAddress.split(/,\s*/).join('\n'),
+        salutation: t.clientName ? `Dear ${t.clientName},` : '',
+        drawings: t.drawingsRef,
+        scope: t.scope.join('\n'),
+        durationWeeks: Math.max(1, Math.round(t.durationWeeks)) || fresh.quote.durationWeeks,
+      }
+      fresh.takeoff = {
+        readAt: new Date().toISOString(),
+        files: files.map((f) => f.name),
+        summary: t.summary,
+        measurements: t.measurements,
+        assumptions: t.assumptions,
+        questions: t.questions,
+      }
+      state = fresh
+      savedSnapshot = null
+      save(state)
+      render()
+      say('Draft filled in from the drawings. Check each section, then save.')
+    } catch (err) {
+      console.error(err)
+      say((err as Error).message)
+    } finally {
+      reading = false
+      const b = root.querySelector<HTMLButtonElement>('[data-action="takeoff"]')
+      if (b) b.disabled = false
+    }
+  }
 
   const createPdf = async (btn: HTMLButtonElement) => {
     const status = root.querySelector<HTMLElement>('[data-out="q.status"]')!

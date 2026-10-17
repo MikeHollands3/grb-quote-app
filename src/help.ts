@@ -40,6 +40,7 @@ export const HELP_HTML = `
 
     <details>
       <summary>4. Build a detailed estimate</summary>
+      <p><b>Got the architect's drawings?</b> At the top of <b>Estimate</b>, under <b>Price from drawings</b>, choose the PDFs (or photos of the sheets), add any notes (spec, what the client supplies) and tap <b>Read drawings</b>. In a minute or two the estimate is filled in, with notes on what was measured, what was assumed and what to check on site. Then check each section as below. Needs signal.</p>
       <ol>
         <li>On <b>Estimate</b>, tap <b>Start blank</b> (or <b>Load example job</b> to see a finished one).</li>
         <li>Fill in the reference (e.g. CR30/1), client and address.</li>

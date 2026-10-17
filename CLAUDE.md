@@ -67,6 +67,11 @@ Improvements". Keep the light/dark token system in `src/styles.css`. Drop the re
    OUTPUT2, account code from the app (default 200), Draft or Approved+email, idempotency key = payment id.
    Money tab: Create in Xero / Create all / Check payments (auto every 10 min when the tab opens).
    Setup: `docs/xero-setup.md`. Typecheck functions with `npx tsc -p functions`.
+7. **Price from drawings (done)** — Estimate tab card: upload the architect's PDFs/photos; a Pages Function
+   (`functions/api/takeoff.ts`, `functions/_lib/takeoff.ts`) sends them to Claude (model in `MODEL`, structured output
+   constrained to the rate-library item names) and returns a takeoff; `src/lib/takeoff.ts` `applyTakeoff()` turns it into
+   a draft estimate + notes (measurements, assumptions, questions). Needs `ANTHROPIC_API_KEY` as a Pages secret and the
+   GRB Google sign-in. Second approved exception to "no backend". Setup: `docs/drawings-setup.md`.
 
 ## Commands
 `npm install` · `npm run dev` · `npm run test` · `npm run build` · `npm run preview`

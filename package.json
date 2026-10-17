@@ -19,6 +19,7 @@
     "vitest": "^2.1.2"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
     "pdf-lib": "^1.17.1"
   }
 }

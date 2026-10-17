@@ -1,3 +1,4 @@
+import type { TakeoffNotes } from './lib/takeoff'
 import libData from './data/rate-library.json'
 import ratesData from './data/rates.json'
 import companyData from './data/company.json'
@@ -17,6 +18,8 @@ export interface EstimateState {
   region: string
   input: DetailedInput
   quote: QuoteDoc
+  /** How the draft was made, when it came from drawings. */
+  takeoff?: TakeoffNotes
 }
 
 export const priceOf = (s: EstimateState) =>
